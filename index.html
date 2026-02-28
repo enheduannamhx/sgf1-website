@@ -3,14 +3,618 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SG F1</title>
+    <title>SG F1 - Bahrain Circuit Telemetry</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { min-height: 100vh; background: linear-gradient(135deg, #1a1a2e, #16213e); font-family: 'Segoe UI', sans-serif; color: white; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        h1 { font-size: 4em; background: linear-gradient(90deg, #00f5d4, #00ff88); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        :root {
+            --bg-dark: #0a0a0f;
+            --bg-card: #12121a;
+            --accent-cyan: #00f0ff;
+            --accent-magenta: #ff00aa;
+            --accent-yellow: #ffdd00;
+            --accent-green: #00ff88;
+            --accent-red: #ff3344;
+            --accent-purple: #aa44ff;
+            --text-primary: #ffffff;
+            --text-secondary: #8888aa;
+            --border-glow: rgba(0, 240, 255, 0.3);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(ellipse at top, rgba(0,240,255,0.1) 0%, transparent 50%),
+                radial-gradient(ellipse at bottom right, rgba(255,0,170,0.05) 0%, transparent 40%);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 30px 0;
+            border-bottom: 1px solid var(--border-glow);
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 42px;
+            font-weight: 900;
+            letter-spacing: 8px;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-magenta));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .logo span { color: var(--accent-cyan); }
+
+        .nav {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .nav a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            transition: color 0.3s;
+        }
+
+        .nav a:hover, .nav a.active {
+            color: var(--accent-cyan);
+        }
+
+        .circuit-container {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .circuit-map {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glow);
+            border-radius: 12px;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .circuit-map::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-magenta), var(--accent-yellow));
+        }
+
+        .circuit-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--accent-cyan);
+            margin-bottom: 20px;
+            letter-spacing: 3px;
+        }
+
+        .circuit-svg {
+            width: 100%;
+            height: auto;
+        }
+
+        .microsector {
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .microsector:hover {
+            filter: brightness(1.5);
+            stroke-width: 3;
+        }
+
+        .microsector-info {
+            position: absolute;
+            background: rgba(0,0,0,0.9);
+            border: 1px solid var(--accent-cyan);
+            border-radius: 8px;
+            padding: 15px;
+            display: none;
+            z-index: 100;
+            min-width: 200px;
+        }
+
+        .microsector-info.show {
+            display: block;
+        }
+
+        .info-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 14px;
+            color: var(--accent-cyan);
+            margin-bottom: 10px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            margin-bottom: 5px;
+        }
+
+        .info-label { color: var(--text-secondary); }
+        .info-value { color: var(--text-primary); font-weight: 600; }
+
+        .sectors-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .sector-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glow);
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .sector-card:hover {
+            border-color: var(--accent-cyan);
+            transform: translateX(5px);
+        }
+
+        .sector-card.active {
+            border-color: var(--accent-cyan);
+            background: rgba(0,240,255,0.05);
+        }
+
+        .sector-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .sector-name {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .sector-number {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 24px;
+            font-weight: 900;
+            opacity: 0.3;
+        }
+
+        .sector-colors {
+            display: flex;
+            gap: 3px;
+            margin-top: 10px;
+        }
+
+        .sector-colors .mini-sector {
+            height: 8px;
+            flex: 1;
+            border-radius: 2px;
+        }
+
+        .color-standard { background: #ffdd00; }
+        .color-personal { background: #00ff88; }
+        .color-purple { background: #aa44ff; }
+        .color-pit { background: #ff3344; }
+
+        .legend {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glow);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .legend-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 15px;
+            letter-spacing: 2px;
+        }
+
+        .legend-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 12px;
+            border-radius: 3px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px;
+            margin-top: 50px;
+            border-top: 1px solid var(--border-glow);
+            color: var(--text-secondary);
+            font-size: 12px;
+        }
+
+        @media (max-width: 1024px) {
+            .circuit-container {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
 <body>
-    <h1>🏎️ SG F1</h1>
-    <p>Dados de Telemetria F1 - Em breve</p>
+    <div class="container">
+        <header>
+            <h1 class="logo">SG<span>F1</span></h1>
+            <nav class="nav">
+                <a href="#" class="active">Pista</a>
+                <a href="#">Voltas</a>
+                <a href="#">Pilotos</a>
+                <a href="#">Sobre</a>
+            </nav>
+        </header>
+
+        <div class="circuit-container">
+            <div class="circuit-map">
+                <h2 class="circuit-title">BAHRAIN INTERNATIONAL CIRCUIT</h2>
+                <svg class="circuit-svg" viewBox="0 0 800 500" id="circuit">
+                    <!-- Track Background -->
+                    <rect x="0" y="0" width="800" height="500" fill="#0a0a0f"/>
+                    
+                    <!-- Grid lines -->
+                    <g stroke="#1a1a2e" stroke-width="1">
+                        <line x1="0" y1="100" x2="800" y2="100"/>
+                        <line x1="0" y1="200" x2="800" y2="200"/>
+                        <line x1="0" y1="300" x2="800" y2="300"/>
+                        <line x1="0" y1="400" x2="800" y2="400"/>
+                        <line x1="160" y1="0" x2="160" y2="500"/>
+                        <line x1="320" y1="0" x2="320" y2="500"/>
+                        <line x1="480" y1="0" x2="480" y2="500"/>
+                        <line x1="640" y1="0" x2="640" y2="500"/>
+                    </g>
+
+                    <!-- Bahrain Circuit - Simplified path with 30 microsectors -->
+                    <!-- Using approximate coordinates for Bahrain circuit -->
+                    
+                    <!-- Sector 1 (10 microsectors) - Turn 1 to Turn 4 -->
+                    <g class="sector" data-sector="1">
+                        <!-- Start/Finish to Turn 1 -->
+                        <path class="microsector" data-id="1" d="M 620 250 Q 600 230 550 230 L 500 230" stroke="#ffdd00" stroke-width="8" fill="none"/>
+                        <path class="microsector" data-id="2" d="M 500 230 Q 450 230 420 250" stroke="#ffdd00" stroke-width="8" fill="none"/>
+                        <!-- Turn 1 -->
+                        <path class="microsector" data-id="3" d="M 420 250 Q 380 280 380 320" stroke="#ffdd00" stroke-width="8" fill="none"/>
+                        <path class="microsector" data-id="4" d="M 380 320 Q 380 360 400 390" stroke="#00ff88" stroke-width="8" fill="none"/>
+                        <!-- Turn 2 -->
+                        <path class="microsector" data-id="5" d="M 400 390 Q 420 420 470 430" stroke="#00ff88" stroke-width="8" fill="none"/>
+                        <path class="microsector" data-id="6" d="M 470 430 Q 520 440 560 420" stroke="#00ff88" stroke-width="8" fill="none"/>
+                        <!-- Turn 3 -->
+                        <path class="microsector" data-id="7" d="M 560 420 Q 590 400 600 360" stroke="#ffdd00" stroke-width="8" fill="none"/>
+                        <path class="microsector" data-id="8" d="M 600 360 Q 610 320 590 290" stroke="#ffdd00" stroke-width="8" fill="none"/>
+                        <!-- Turn 4 -->
+                        <path class="microsector" data-id="9" d="M 590 290 Q 570 260 530 250" stroke="#ffdd00" stroke-width="8" fill="none"/>
+                        <path class="microsector" data-id="10" d="M 530 250 Q 490 240 450 250" stroke="#aa44ff" stroke-width="8" fill="none"/>
+                    </g>
+
+                    <!-- Sector 2 (11 microsectors) - Turn 4 to Turn 11 -->
+                    <g class="sector" data-sector="2">
+                        <path class="microsector" data-id="11" d="M 450 250 Q 400 270 360 310" stroke="#ffdd00" stroke-width="8" fill="none"/>
+                        <path class="microsector" data-id="12" d="M 360 310 Q 320 360 320 410" stroke="#ffdd00" stroke-width="8" fill="none"/>
+                        <path class="microsector" data-id="13" d="M 320 410 Q 320 450 350 470" stroke="#00ff88" stroke-width="8" fill="none"/>
+                        <path class="microsector" data-id="14" d="M 350 470 Q 380 480 420 470" stroke="#00ff88" stroke-width="8" fill="none"/>
+                        <path class="microsector" data-id="15" d="M 420 470 Q 460 460 480 430" stroke="#00ff88" stroke-width="8" fill="none"/>
+                        <path class="microsector" data-id="16" d="M 480 430 Q 500 400 500 360" stroke="#ffdd00" stroke-width="8" fill="none"/>
+                        <path class="microsector" data-id="17" d="M 500 360 Q 500 320 480 290" stroke="#ffdd00" stroke-width="8" fill="none"/>
+                        <path class="microsector" data-id="18" d="M 480 290 Q 460 260 420 250" stroke="#aa44ff" stroke-width="8" fill="none"/>
+                        <path class="microsector" data-id="19" d="M 420 250 Q 380 240 350 260" stroke="#ffdd00" stroke-width="8" fill="none"/>
+                        <path class="microsector" data-id="20" d="M 350 260 Q 320 280 310 320" stroke="#ffdd00" stroke-width="8" fill="none"/>
+                        <path class="microsector" data-id="21" d="M 310 320 Q 300 360 320 400" stroke="#00ff88" stroke-width="8" fill="none"/>
+                    </g>
+
+                    <!-- Sector 3 (9 microsectors) - Turn 11 to Start/Finish -->
+                    <g class="sector" data-sector="3">
+                        <path class="microsector" data-id="22" d="M 320 400 Q 340 430 380 440" stroke="#00ff88" stroke-width="8" fill="none"/>
+                        <path class="microsector" data-id="23" d="M 380 440 Q 420 450 460 440" stroke="#ffdd00" stroke-width="8" fill="none"/>
+                        <path class="microsector" data-id="24" d="M 460 440 Q 500 430 530 400" stroke="#ffdd00" stroke-width="8" fill="none"/>
+                        <path class="microsector" data-id="25" d="M 530 400 Q 560 370 570 330" stroke="#ffdd00" stroke-width="8" fill="none"/>
+                        <path class="microsector" data-id="26" d="M 570 330 Q 580 290 560 260" stroke="#aa44ff" stroke-width="8" fill="none"/>
+                        <path class="microsector" data-id="27" d="M 560 260 Q 540 230 500 220" stroke="#ffdd00" stroke-width="8" fill="none"/>
+                        <path class="microsector" data-id="28" d="M 500 220 Q 460 210 420 220" stroke="#ffdd00" stroke-width="8" fill="none"/>
+                        <path class="microsector" data-id="29" d="M 420 220 Q 380 230 350 260" stroke="#00ff88" stroke-width="8" fill="none"/>
+                        <path class="microsector" data-id="30" d="M 350 260 Q 330 290 320 330 Q 300 250 620 250" stroke="#aa44ff" stroke-width="8" fill="none"/>
+                    </g>
+
+                    <!-- Start/Finish Line -->
+                    <line x1="620" y1="240" x2="620" y2="260" stroke="#ffffff" stroke-width="4"/>
+                    <text x="620" y="275" fill="#ffffff" font-size="10" text-anchor="middle" font-family="Orbitron">START/FINISH</text>
+
+                    <!-- Turn Labels -->
+                    <text x="380" y="300" fill="#8888aa" font-size="10" text-anchor="middle" font-family="Rajdhani">T1</text>
+                    <text x="480" y="450" fill="#8888aa" font-size="10" text-anchor="middle" font-family="Rajdhani">T2</text>
+                    <text x="580" y="360" fill="#8888aa" font-size="10" text-anchor="middle" font-family="Rajdhani">T3</text>
+                    <text x="500" y="240" fill="#8888aa" font-size="10" text-anchor="middle" font-family="Rajdhani">T4</text>
+                    <text x="310" y="380" fill="#8888aa" font-size="10" text-anchor="middle" font-family="Rajdhani">T11</text>
+                    <text x="420" y="210" fill="#8888aa" font-size="10" text-anchor="middle" font-family="Rajdhani">T15</text>
+
+                    <!-- Labels -->
+                    <text x="400" y="80" fill="#00f0ff" font-size="14" text-anchor="middle" font-family="Orbitron" font-weight="700">SETOR 1</text>
+                    <text x="400" y="460" fill="#00ff88" font-size="14" text-anchor="middle" font-family="Orbitron" font-weight="700">SETOR 2</text>
+                    <text x="650" y="270" fill="#aa44ff" font-size="14" text-anchor="middle" font-family="Orbitron" font-weight="700">SETOR 3</text>
+                </svg>
+
+                <div class="microsector-info" id="microsectorInfo">
+                    <div class="info-title">MICROSETOR <span id="infoId">1</span></div>
+                    <div class="info-row">
+                        <span class="info-label">Setor:</span>
+                        <span class="info-value" id="infoSector">1</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Melhor Tempo:</span>
+                        <span class="info-value" id="infoTime">--:--.---</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Piloto:</span>
+                        <span class="info-value" id="infoDriver">--</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Vel. Máx:</span>
+                        <span class="info-value" id="infoSpeed">-- km/h</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sectors-panel">
+                <div class="sector-card active" data-sector="1">
+                    <div class="sector-header">
+                        <span class="sector-name" style="color: #00f0ff;">SETOR 1</span>
+                        <span class="sector-number">01</span>
+                    </div>
+                    <div class="sector-stats">
+                        <div class="info-row">
+                            <span class="info-label">Voltas:</span>
+                            <span class="info-value">1,247</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Melhor:</span>
+                            <span class="info-value" style="color: #00ff88;">32.456</span>
+                        </div>
+                    </div>
+                    <div class="sector-colors">
+                        <div class="mini-sector color-standard"></div>
+                        <div class="mini-sector color-standard"></div>
+                        <div class="mini-sector color-standard"></div>
+                        <div class="mini-sector color-personal"></div>
+                        <div class="mini-sector color-personal"></div>
+                        <div class="mini-sector color-personal"></div>
+                        <div class="mini-sector color-standard"></div>
+                        <div class="mini-sector color-standard"></div>
+                        <div class="mini-sector color-standard"></div>
+                        <div class="mini-sector color-purple"></div>
+                    </div>
+                </div>
+
+                <div class="sector-card" data-sector="2">
+                    <div class="sector-header">
+                        <span class="sector-name" style="color: #00ff88;">SETOR 2</span>
+                        <span class="sector-number">02</span>
+                    </div>
+                    <div class="sector-stats">
+                        <div class="info-row">
+                            <span class="info-label">Voltas:</span>
+                            <span class="info-value">1,312</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Melhor:</span>
+                            <span class="info-value" style="color: #00ff88;">41.892</span>
+                        </div>
+                    </div>
+                    <div class="sector-colors">
+                        <div class="mini-sector color-standard"></div>
+                        <div class="mini-sector color-standard"></div>
+                        <div class="mini-sector color-personal"></div>
+                        <div class="mini-sector color-personal"></div>
+                        <div class="mini-sector color-personal"></div>
+                        <div class="mini-sector color-standard"></div>
+                        <div class="mini-sector color-standard"></div>
+                        <div class="mini-sector color-purple"></div>
+                        <div class="mini-sector color-standard"></div>
+                        <div class="mini-sector color-standard"></div>
+                        <div class="mini-sector color-personal"></div>
+                    </div>
+                </div>
+
+                <div class="sector-card" data-sector="3">
+                    <div class="sector-header">
+                        <span class="sector-name" style="color: #aa44ff;">SETOR 3</span>
+                        <span class="sector-number">03</span>
+                    </div>
+                    <div class="sector-stats">
+                        <div class="info-row">
+                            <span class="info-label">Voltas:</span>
+                            <span class="info-value">1,189</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Melhor:</span>
+                            <span class="info-value" style="color: #aa44ff;">38.234</span>
+                        </div>
+                    </div>
+                    <div class="sector-colors">
+                        <div class="mini-sector color-personal"></div>
+                        <div class="mini-sector color-standard"></div>
+                        <div class="mini-sector color-standard"></div>
+                        <div class="mini-sector color-standard"></div>
+                        <div class="mini-sector color-purple"></div>
+                        <div class="mini-sector color-standard"></div>
+                        <div class="mini-sector color-standard"></div>
+                        <div class="mini-sector color-personal"></div>
+                        <div class="mini-sector color-purple"></div>
+                    </div>
+                </div>
+
+                <div class="legend">
+                    <div class="legend-title">LEGENDA</div>
+                    <div class="legend-items">
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #ffdd00;"></div>
+                            <span>Standard</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #00ff88;"></div>
+                            <span>Personal Best</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #aa44ff;"></div>
+                            <span>Overall Best</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #ff3344;"></div>
+                            <span>Pit Lane</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>SG F1 - Dados de Telemetria © 2026 | OpenF1 API</p>
+        </footer>
+    </div>
+
+    <script>
+        // Microsector data (sample data for demonstration)
+        const microsectorData = {
+            1: { sector: 1, time: "32.456", driver: "M. Verstappen", speed: 312 },
+            2: { sector: 1, time: "32.891", driver: "L. Hamilton", speed: 308 },
+            3: { sector: 1, time: "33.012", driver: "C. Leclerc", speed: 285 },
+            4: { sector: 1, time: "33.234", driver: "M. Verstappen", speed: 276 },
+            5: { sector: 1, time: "33.567", driver: "G. Russell", speed: 292 },
+            6: { sector: 1, time: "33.789", driver: "L. Hamilton", speed: 298 },
+            7: { sector: 1, time: "33.456", driver: "O. Piastri", speed: 301 },
+            8: { sector: 1, time: "33.678", driver: "C. Leclerc", speed: 295 },
+            9: { sector: 1, time: "33.890", driver: "M. Verstappen", speed: 288 },
+            10: { sector: 1, time: "32.123", driver: "L. Norris", speed: 345 },
+            11: { sector: 2, time: "34.012", driver: "M. Verstappen", speed: 278 },
+            12: { sector: 2, time: "34.234", driver: "G. Russell", speed: 272 },
+            13: { sector: 2, time: "34.456", driver: "C. Leclerc", speed: 265 },
+            14: { sector: 2, time: "34.678", driver: "O. Piastri", speed: 271 },
+            15: { sector: 2, time: "34.890", driver: "L. Hamilton", speed: 278 },
+            16: { sector: 2, time: "35.012", driver: "M. Verstappen", speed: 282 },
+            17: { sector: 2, time: "35.234", driver: "L. Norris", speed: 276 },
+            18: { sector: 2, time: "31.456", driver: "C. Leclerc", speed: 356 },
+            19: { sector: 2, time: "35.678", driver: "G. Russell", speed: 268 },
+            20: { sector: 2, time: "35.890", driver: "O. Piastri", speed: 262 },
+            21: { sector: 2, time: "36.012", driver: "L. Hamilton", speed: 258 },
+            22: { sector: 3, time: "36.234", driver: "M. Verstappen", speed: 265 },
+            23: { sector: 3, time: "36.456", driver: "G. Russell", speed: 271 },
+            24: { sector: 3, time: "36.678", driver: "C. Leclerc", speed: 278 },
+            25: { sector: 3, time: "36.890", driver: "O. Piastri", speed: 285 },
+            26: { sector: 3, time: "30.234", driver: "L. Norris", speed: 362 },
+            27: { sector: 3, time: "37.012", driver: "M. Verstappen", speed: 292 },
+            28: { sector: 3, time: "37.234", driver: "G. Russell", speed: 298 },
+            29: { sector: 3, time: "37.456", driver: "C. Leclerc", speed: 285 },
+            30: { sector: 3, time: "38.234", driver: "L. Hamilton", speed: 276 }
+        };
+
+        // Color mapping
+        const colorMap = {
+            'ffdd00': 'Standard',
+            '00ff88': 'Personal Best',
+            'aa44ff': 'Overall Best',
+            'ff3344': 'Pit Lane'
+        };
+
+        // Handle microsector hover/click
+        document.querySelectorAll('.microsector').forEach(el => {
+            el.addEventListener('mouseenter', (e) => {
+                const id = parseInt(el.dataset.id);
+                const data = microsectorData[id];
+                const info = document.getElementById('microsectorInfo');
+                
+                if (data) {
+                    document.getElementById('infoId').textContent = id;
+                    document.getElementById('infoSector').textContent = data.sector;
+                    document.getElementById('infoTime').textContent = data.time + 's';
+                    document.getElementById('infoDriver').textContent = data.driver;
+                    document.getElementById('infoSpeed').textContent = data.speed + ' km/h';
+                    
+                    // Get color
+                    const color = el.getAttribute('stroke');
+                    document.getElementById('infoTime').style.color = '#' + color;
+                }
+                
+                const rect = el.getBoundingClientRect();
+                const containerRect = document.querySelector('.circuit-map').getBoundingClientRect();
+                
+                info.style.left = (rect.left - containerRect.left + 50) + 'px';
+                info.style.top = (rect.top - containerRect.top) + 'px';
+                info.classList.add('show');
+            });
+
+            el.addEventListener('mouseleave', () => {
+                document.getElementById('microsectorInfo').classList.remove('show');
+            });
+        });
+
+        // Sector card hover
+        document.querySelectorAll('.sector-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                const sectorNum = card.dataset.sector;
+                document.querySelectorAll('.sector-card').forEach(c => c.classList.remove('active'));
+                card.classList.add('active');
+                
+                // Highlight microsectors
+                document.querySelectorAll('.microsector').forEach(el => {
+                    const id = parseInt(el.dataset.id);
+                    let sector;
+                    if (id <= 10) sector = 1;
+                    else if (id <= 21) sector = 2;
+                    else sector = 3;
+                    
+                    if (sector == sectorNum) {
+                        el.style.opacity = '1';
+                    } else {
+                        el.style.opacity = '0.3';
+                    }
+                });
+            });
+
+            card.addEventListener('mouseleave', () => {
+                document.querySelectorAll('.microsector').forEach(el => {
+                    el.style.opacity = '1';
+                });
+            });
+        });
+    </script>
 </body>
 </html>
