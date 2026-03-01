@@ -568,11 +568,11 @@
             const d = telemetryData[index];
             const progress = index / telemetryData.length;
             
-            // Time
+            // Time - show only centiseconds
             const secs = d.time_sec;
             const mins = Math.floor(secs / 60);
-            const s = (secs % 60).toFixed(3);
-            document.getElementById('timeDisplay').textContent = `${mins}:${s.padStart(6, '0')}`;
+            const s = (secs % 60).toFixed(2);
+            document.getElementById('timeDisplay').textContent = `${mins}:${s.padStart(5, '0')}`;
             
             // Timeline
             document.getElementById('timelineProgress').style.width = `${progress * 100}%`;
