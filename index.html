@@ -3,628 +3,147 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SG F1 - Bahrain Circuit Telemetry</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>SG F1 - Bahrain Circuit</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg-dark: #0a0a0f;
-            --bg-card: #12121a;
-            --accent-cyan: #00f0ff;
-            --accent-magenta: #ff00aa;
-            --accent-yellow: #ffdd00;
-            --accent-green: #00ff88;
-            --accent-red: #ff3344;
-            --accent-purple: #aa44ff;
-            --text-primary: #ffffff;
-            --text-secondary: #8888aa;
-            --border-glow: rgba(0, 240, 255, 0.3);
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
         body {
-            font-family: 'Rajdhani', sans-serif;
-            background: var(--bg-dark);
-            color: var(--text-primary);
-            min-height: 100vh;
-            background-image: 
-                radial-gradient(ellipse at top, rgba(0,240,255,0.1) 0%, transparent 50%),
-                radial-gradient(ellipse at bottom right, rgba(255,0,170,0.05) 0%, transparent 40%);
-        }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
+            background: #0a0a0f;
+            margin: 0;
             padding: 20px;
+            font-family: 'Rajdhani', sans-serif;
+            color: #fff;
         }
-
-        header {
+        .header {
             text-align: center;
-            padding: 30px 0;
-            border-bottom: 1px solid var(--border-glow);
-            margin-bottom: 30px;
+            margin-bottom: 20px;
         }
-
         .logo {
             font-family: 'Orbitron', sans-serif;
-            font-size: 42px;
+            font-size: 36px;
             font-weight: 900;
-            letter-spacing: 8px;
-            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-magenta));
+            background: linear-gradient(135deg, #00f0ff, #ff00aa);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            background-clip: text;
         }
-
-        .logo span { color: var(--accent-cyan); }
-
-        .nav {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            margin-top: 20px;
-        }
-
-        .nav a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 600;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            transition: color 0.3s;
-        }
-
-        .nav a:hover, .nav a.active {
-            color: var(--accent-cyan);
-        }
-
-        .circuit-container {
-            display: grid;
-            grid-template-columns: 1fr 320px;
-            gap: 30px;
-            margin-top: 20px;
-        }
-
-        .circuit-map {
-            background: var(--bg-card);
-            border: 1px solid var(--border-glow);
-            border-radius: 12px;
-            padding: 20px;
-            position: relative;
-        }
-
-        .circuit-map::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-magenta), var(--accent-yellow));
-        }
-
         .circuit-title {
             font-family: 'Orbitron', sans-serif;
             font-size: 18px;
-            font-weight: 700;
-            color: var(--accent-cyan);
-            margin-bottom: 5px;
-            letter-spacing: 3px;
+            color: #00f0ff;
+            margin-top: 10px;
         }
-
-        .circuit-info {
-            font-size: 12px;
-            color: var(--text-secondary);
-            margin-bottom: 15px;
-        }
-
-        .circuit-svg {
+        svg {
             width: 100%;
-            height: auto;
-        }
-
-        .track-path {
-            fill: none;
-            stroke: #2a2a3a;
-            stroke-width: 30;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-        }
-
-        .track-centerline {
-            fill: none;
-            stroke: #3a3a4a;
-            stroke-width: 2;
-            stroke-dasharray: 20, 15;
-        }
-
-        .track-center {
-            fill: none;
-            stroke: #1a1a2a;
-            stroke-width: 20;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-        }
-
-        .microsector {
-            fill: none;
-            stroke-width: 20;
-            stroke-linecap: round;
-            cursor: pointer;
-            transition: all 0.3s;
-            opacity: 0.85;
-        }
-
-        .microsector:hover {
-            opacity: 1;
-            filter: brightness(1.5);
-            stroke-width: 24;
-        }
-
-        .corner-label {
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 10px;
-            fill: #666;
-            font-weight: 600;
-        }
-
-        .sector-label {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 14px;
-            font-weight: 700;
-            fill: var(--accent-cyan);
-        }
-
-        .sectors-panel {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .sector-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-glow);
-            border-radius: 10px;
-            padding: 15px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .sector-card:hover {
-            border-color: var(--accent-cyan);
-            transform: translateX(5px);
-        }
-
-        .sector-card.active {
-            border-color: var(--accent-cyan);
-            background: rgba(0,240,255,0.08);
-        }
-
-        .sector-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        .sector-name {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 15px;
-            font-weight: 700;
-        }
-
-        .sector-number {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 28px;
-            font-weight: 900;
-            opacity: 0.2;
-        }
-
-        .sector-stats {
-            display: flex;
-            gap: 15px;
-        }
-
-        .info-row {
-            display: flex;
-            justify-content: space-between;
-            font-size: 12px;
-        }
-
-        .info-label { color: var(--text-secondary); }
-        .info-value { color: var(--text-primary); font-weight: 600; }
-
-        .sector-colors {
-            display: flex;
-            gap: 2px;
-            margin-top: 10px;
-        }
-
-        .sector-colors .mini-sector {
-            height: 6px;
-            flex: 1;
-            border-radius: 2px;
-        }
-
-        .legend {
-            background: var(--bg-card);
-            border: 1px solid var(--border-glow);
-            border-radius: 10px;
-            padding: 15px;
-            margin-top: 10px;
-        }
-
-        .legend-title {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 12px;
-            color: var(--text-secondary);
-            margin-bottom: 12px;
-            letter-spacing: 2px;
-        }
-
-        .legend-items {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 11px;
-        }
-
-        .legend-color {
-            width: 16px;
-            height: 8px;
-            border-radius: 2px;
-        }
-
-        footer {
-            text-align: center;
-            padding: 30px;
-            margin-top: 40px;
-            border-top: 1px solid var(--border-glow);
-            color: var(--text-secondary);
-            font-size: 12px;
-        }
-
-        @media (max-width: 1024px) {
-            .circuit-container {
-                grid-template-columns: 1fr;
-            }
+            max-width: 1200px;
+            margin: 0 auto;
+            display: block;
+            background: #12121a;
+            border-radius: 12px;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1 class="logo">SG<span>F1</span></h1>
-            <nav class="nav">
-                <a href="#" class="active">Pista</a>
-                <a href="#">Voltas</a>
-                <a href="#">Pilotos</a>
-                <a href="#">Sobre</a>
-            </nav>
-        </header>
-
-        <div class="circuit-container">
-            <div class="circuit-map">
-                <h2 class="circuit-title">BAHRAIN INTERNATIONAL CIRCUIT</h2>
-                <p class="circuit-info">5.412 km • 15 curvas • Sakhir, Bahrain • 2026</p>
-                
-                <svg class="circuit-svg" viewBox="0 0 900 600" id="circuit">
-                    <!-- Background -->
-                    <rect x="0" y="0" width="900" height="600" fill="#0a0a0f"/>
-                    
-                    <!-- Grid -->
-                    <g stroke="#151520" stroke-width="1" opacity="0.5">
-                        <line x1="0" y1="150" x2="900" y2="150"/>
-                        <line x1="0" y1="300" x2="900" y2="300"/>
-                        <line x1="0" y1="450" x2="900" y2="450"/>
-                        <line x1="225" y1="0" x2="225" y2="600"/>
-                        <line x1="450" y1="0" x2="450" y2="600"/>
-                        <line x1="675" y1="0" x2="675" y2="600"/>
-                    </g>
-
-                    <!-- Inner grass area -->
-                    <ellipse cx="480" cy="300" rx="320" ry="200" fill="#0d1a0d"/>
-
-                    <!-- Track - Using real Bahrain coordinates -->
-                    <!-- Outer edge -->
-                    <path class="track-path" d="M 780 320 
-                        C 720 340, 650 360, 580 350
-                        C 500 340, 420 300, 360 240
-                        C 300 180, 280 100, 320 50
-                        C 360 0, 450 -20, 520 20
-                        C 590 60, 620 120, 620 180
-                        C 620 240, 580 300, 500 340
-                        C 420 380, 340 400, 280 380
-                        C 220 360, 200 300, 240 240
-                        C 280 180, 360 140, 440 140
-                        C 520 140, 600 180, 640 260
-                        C 680 340, 680 420, 640 480
-                        C 600 540, 520 560, 440 540
-                        C 360 520, 300 460, 280 380
-                        C 260 300, 280 220, 340 160
-                        C 400 100, 500 80, 580 100
-                        C 660 120, 720 180, 740 260
-                        C 760 340, 760 400, 720 440
-                        C 680 480, 600 500, 520 480
-                        C 440 460, 400 400, 420 340
-                        C 440 280, 520 260, 580 280
-                        C 640 300, 680 360, 680 420
-                        C 680 480, 640 520, 560 520
-                        C 480 520, 420 480, 380 420
-                        C 340 360, 340 300, 380 260
-                        C 420 220, 500 220, 560 260
-                        C 620 300, 660 380, 660 460
-                        C 660 540, 620 580, 540 580
-                        C 460 580, 400 540, 360 480
-                        C 320 420, 320 360, 360 320
-                        C 400 280, 480 280, 540 320
-                        C 600 360, 640 440, 640 520
-                        C 640 600, 560 620, 480 600
-                        L 780 320 Z" 
-                    />
-
-                    <!-- Track center line -->
-                    <path class="track-center" d="M 770 310
-                        Q 700 340, 620 340
-                        Q 540 340, 460 280
-                        Q 380 220, 340 140
-                        Q 300 60, 360 20
-                        Q 420 -20, 500 10
-                        Q 580 40, 620 100
-                        Q 660 160, 660 240
-                        Q 660 320, 600 380
-                        Q 540 440, 460 460
-                        Q 380 480, 320 440
-                        Q 260 400, 280 320
-                        Q 300 240, 380 200
-                        Q 460 160, 540 180
-                        Q 620 200, 660 280
-                        Q 700 360, 700 440
-                        Q 700 520, 620 560
-                        Q 540 600, 460 580
-                        Q 380 560, 340 480
-                        Q 300 400, 340 320
-                        Q 380 240, 480 220
-                        Q 580 200, 640 280
-                        Q 700 360, 700 440
-                        Q 700 520, 620 560
-                        Q 540 600, 460 580
-                        Q 380 560, 360 480
-                        L 770 310 Z" 
-                    />
-
-                    <!-- Microsectors with real positions -->
-                    <!-- Sector 1: Start to Turn 4 -->
-                    <g id="sector1-micros">
-                        <path class="microsector" data-id="1" data-sector="1" d="M 770 310 Q 720 325 670 320" stroke="#ffdd00"/>
-                        <path class="microsector" data-id="2" data-sector="1" d="M 670 320 Q 620 315 580 300" stroke="#ffdd00"/>
-                        <path class="microsector" data-id="3" data-sector="1" d="M 580 300 Q 540 285 500 260" stroke="#ffdd00"/>
-                        <path class="microsector" data-id="4" data-sector="1" d="M 500 260 Q 460 235 430 200" stroke="#ffdd00"/>
-                        <path class="microsector" data-id="5" data-sector="1" d="M 430 200 Q 400 165 380 120" stroke="#00ff88"/>
-                        <path class="microsector" data-id="6" data-sector="1" d="M 380 120 Q 360 75 360 40" stroke="#00ff88"/>
-                        <path class="microsector" data-id="7" data-sector="1" d="M 360 40 Q 360 10 390 -10" stroke="#00ff88"/>
-                        <path class="microsector" data-id="8" data-sector="1" d="M 390 -10 Q 440 -25 490 0" stroke="#ffdd00"/>
-                        <path class="microsector" data-id="9" data-sector="1" d="M 490 0 Q 540 25 570 60" stroke="#ffdd00"/>
-                        <path class="microsector" data-id="10" data-sector="1" d="M 570 60 Q 600 95 610 140" stroke="#aa44ff"/>
-                    </g>
-
-                    <!-- Sector 2: Turn 4 to Turn 11 -->
-                    <g id="sector2-micros">
-                        <path class="microsector" data-id="11" data-sector="2" d="M 610 140 Q 620 185 610 230" stroke="#ffdd00"/>
-                        <path class="microsector" data-id="12" data-sector="2" d="M 610 230 Q 600 275 570 310" stroke="#ffdd00"/>
-                        <path class="microsector" data-id="13" data-sector="2" d="M 570 310 Q 540 345 500 370" stroke="#00ff88"/>
-                        <path class="microsector" data-id="14" data-sector="2" d="M 500 370 Q 460 395 420 410" stroke="#00ff88"/>
-                        <path class="microsector" data-id="15" data-sector="2" d="M 420 410 Q 380 425 350 430" stroke="#00ff88"/>
-                        <path class="microsector" data-id="16" data-sector="2" d="M 350 430 Q 320 435 310 420" stroke="#ffdd00"/>
-                        <path class="microsector" data-id="17" data-sector="2" d="M 310 420 Q 300 405 310 380" stroke="#ffdd00"/>
-                        <path class="microsector" data-id="18" data-sector="2" d="M 310 380 Q 320 355 350 340" stroke="#aa44ff"/>
-                        <path class="microsector" data-id="19" data-sector="2" d="M 350 340 Q 380 325 410 320" stroke="#ffdd00"/>
-                        <path class="microsector" data-id="20" data-sector="2" d="M 410 320 Q 440 315 460 300" stroke="#ffdd00"/>
-                        <path class="microsector" data-id="21" data-sector="2" d="M 460 300 Q 480 285 490 260" stroke="#00ff88"/>
-                    </g>
-
-                    <!-- Sector 3: Turn 11 to Finish -->
-                    <g id="sector3-micros">
-                        <path class="microsector" data-id="22" data-sector="3" d="M 490 260 Q 500 235 530 220" stroke="#00ff88"/>
-                        <path class="microsector" data-id="23" data-sector="3" d="M 530 220 Q 560 205 590 200" stroke="#ffdd00"/>
-                        <path class="microsector" data-id="24" data-sector="3" d="M 590 200 Q 620 195 640 180" stroke="#ffdd00"/>
-                        <path class="microsector" data-id="25" data-sector="3" d="M 640 180 Q 660 165 670 140" stroke="#ffdd00"/>
-                        <path class="microsector" data-id="26" data-sector="3" d="M 670 140 Q 680 115 680 90" stroke="#aa44ff"/>
-                        <path class="microsector" data-id="27" data-sector="3" d="M 680 90 Q 680 65 670 45" stroke="#ffdd00"/>
-                        <path class="microsector" data-id="28" data-sector="3" d="M 670 45 Q 660 25 640 15" stroke="#ffdd00"/>
-                        <path class="microsector" data-id="29" data-sector="3" d="M 640 15 Q 610 5 580 10" stroke="#00ff88"/>
-                        <path class="microsector" data-id="30" data-sector="3" d="M 580 10 Q 550 15 530 30 Q 510 45 510 70 L 770 310" stroke="#aa44ff"/>
-                    </g>
-
-                    <!-- Corner labels -->
-                    <text class="corner-label" x="580" y="290">T1</text>
-                    <text class="corner-label" x="370" y="90">T2</text>
-                    <text class="corner-label" x="520" y="90">T3</text>
-                    <text class="corner-label" x="600" y="200">T4</text>
-                    <text class="corner-label" x="460" y="400">T5</text>
-                    <text class="corner-label" x="340" y="420">T6</text>
-                    <text class="corner-label" x="330" y="350">T7</text>
-                    <text class="corner-label" x="340" y="280">T8</text>
-                    <text class="corner-label" x="400" y="320">T9</text>
-                    <text class="corner-label" x="480" y="300">T10</text>
-                    <text class="corner-label" x="500" y="400">T11</text>
-                    <text class="corner-label" x="600" y="350">T12</text>
-                    <text class="corner-label" x="660" y="280">T13</text>
-                    <text class="corner-label" x="600" y="200">T14</text>
-                    <text class="corner-label" x="520" y="150">T15</text>
-
-                    <!-- Sector labels -->
-                    <text class="sector-label" x="520" y="80">SETOR 1</text>
-                    <text class="sector-label" x="400" y="500" fill="#00ff88">SETOR 2</text>
-                    <text class="sector-label" x="720" y="350" fill="#aa44ff">SETOR 3</text>
-
-                    <!-- Start/Finish line -->
-                    <line x1="770" y1="295" x2="770" y2="325" stroke="#fff" stroke-width="4"/>
-                    <text x="770" y="345" fill="#fff" font-size="9" text-anchor="middle" font-family="Orbitron">START/FINISH</text>
-                </svg>
-            </div>
-
-            <div class="sectors-panel">
-                <div class="sector-card active" data-sector="1">
-                    <div class="sector-header">
-                        <span class="sector-name" style="color: #00f0ff;">SETOR 1</span>
-                        <span class="sector-number">01</span>
-                    </div>
-                    <div class="sector-stats">
-                        <div><span class="info-label">Voltas:</span> <span class="info-value">1,247</span></div>
-                        <div><span class="info-label">Melhor:</span> <span class="info-value" style="color: #00ff88;">32.456</span></div>
-                    </div>
-                    <div class="sector-colors">
-                        <div class="mini-sector" style="background:#ffdd00"></div>
-                        <div class="mini-sector" style="background:#ffdd00"></div>
-                        <div class="mini-sector" style="background:#ffdd00"></div>
-                        <div class="mini-sector" style="background:#00ff88"></div>
-                        <div class="mini-sector" style="background:#00ff88"></div>
-                        <div class="mini-sector" style="background:#00ff88"></div>
-                        <div class="mini-sector" style="background:#ffdd00"></div>
-                        <div class="mini-sector" style="background:#ffdd00"></div>
-                        <div class="mini-sector" style="background:#ffdd00"></div>
-                        <div class="mini-sector" style="background:#aa44ff"></div>
-                    </div>
-                </div>
-
-                <div class="sector-card" data-sector="2">
-                    <div class="sector-header">
-                        <span class="sector-name" style="color: #00ff88;">SETOR 2</span>
-                        <span class="sector-number">02</span>
-                    </div>
-                    <div class="sector-stats">
-                        <div><span class="info-label">Voltas:</span> <span class="info-value">1,312</span></div>
-                        <div><span class="info-label">Melhor:</span> <span class="info-value" style="color: #00ff88;">41.892</span></div>
-                    </div>
-                    <div class="sector-colors">
-                        <div class="mini-sector" style="background:#ffdd00"></div>
-                        <div class="mini-sector" style="background:#ffdd00"></div>
-                        <div class="mini-sector" style="background:#00ff88"></div>
-                        <div class="mini-sector" style="background:#00ff88"></div>
-                        <div class="mini-sector" style="background:#00ff88"></div>
-                        <div class="mini-sector" style="background:#ffdd00"></div>
-                        <div class="mini-sector" style="background:#ffdd00"></div>
-                        <div class="mini-sector" style="background:#aa44ff"></div>
-                        <div class="mini-sector" style="background:#ffdd00"></div>
-                        <div class="mini-sector" style="background:#ffdd00"></div>
-                        <div class="mini-sector" style="background:#00ff88"></div>
-                    </div>
-                </div>
-
-                <div class="sector-card" data-sector="3">
-                    <div class="sector-header">
-                        <span class="sector-name" style="color: #aa44ff;">SETOR 3</span>
-                        <span class="sector-number">03</span>
-                    </div>
-                    <div class="sector-stats">
-                        <div><span class="info-label">Voltas:</span> <span class="info-value">1,189</span></div>
-                        <div><span class="info-label">Melhor:</span> <span class="info-value" style="color: #aa44ff;">38.234</span></div>
-                    </div>
-                    <div class="sector-colors">
-                        <div class="mini-sector" style="background:#00ff88"></div>
-                        <div class="mini-sector" style="background:#ffdd00"></div>
-                        <div class="mini-sector" style="background:#ffdd00"></div>
-                        <div class="mini-sector" style="background:#ffdd00"></div>
-                        <div class="mini-sector" style="background:#aa44ff"></div>
-                        <div class="mini-sector" style="background:#ffdd00"></div>
-                        <div class="mini-sector" style="background:#ffdd00"></div>
-                        <div class="mini-sector" style="background:#00ff88"></div>
-                        <div class="mini-sector" style="background:#aa44ff"></div>
-                    </div>
-                </div>
-
-                <div class="legend">
-                    <div class="legend-title">LEGENDA</div>
-                    <div class="legend-items">
-                        <div class="legend-item"><div class="legend-color" style="background:#ffdd00"></div><span>Standard</span></div>
-                        <div class="legend-item"><div class="legend-color" style="background:#00ff88"></div><span>Personal Best</span></div>
-                        <div class="legend-item"><div class="legend-color" style="background:#aa44ff"></div><span>Overall Best</span></div>
-                        <div class="legend-item"><div class="legend-color" style="background:#ff3344"></div><span>Pit Lane</span></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <footer>
-            <p>SG F1 - Dados de Telemetria © 2026 | OpenF1 API</p>
-        </footer>
+    <div class="header">
+        <h1 class="logo">SG<span>F1</span></h1>
+        <p class="circuit-title">BAHRAIN INTERNATIONAL CIRCUIT</p>
     </div>
 
-    <script>
-        const microsectorData = {
-            1: { sector: 1, time: "32.456", driver: "M. Verstappen", speed: 312 },
-            2: { sector: 1, time: "32.891", driver: "L. Hamilton", speed: 308 },
-            3: { sector: 1, time: "33.012", driver: "C. Leclerc", speed: 285 },
-            4: { sector: 1, time: "33.234", driver: "M. Verstappen", speed: 276 },
-            5: { sector: 1, time: "33.567", driver: "G. Russell", speed: 292 },
-            6: { sector: 1, time: "33.789", driver: "L. Hamilton", speed: 298 },
-            7: { sector: 1, time: "33.456", driver: "O. Piastri", speed: 301 },
-            8: { sector: 1, time: "33.678", driver: "C. Leclerc", speed: 295 },
-            9: { sector: 1, time: "33.890", driver: "M. Verstappen", speed: 288 },
-            10: { sector: 1, time: "32.123", driver: "L. Norris", speed: 345 },
-            11: { sector: 2, time: "34.012", driver: "M. Verstappen", speed: 278 },
-            12: { sector: 2, time: "34.234", driver: "G. Russell", speed: 272 },
-            13: { sector: 2, time: "34.456", driver: "C. Leclerc", speed: 265 },
-            14: { sector: 2, time: "34.678", driver: "O. Piastri", speed: 271 },
-            15: { sector: 2, time: "34.890", driver: "L. Hamilton", speed: 278 },
-            16: { sector: 2, time: "35.012", driver: "M. Verstappen", speed: 282 },
-            17: { sector: 2, time: "35.234", driver: "L. Norris", speed: 276 },
-            18: { sector: 2, time: "31.456", driver: "C. Leclerc", speed: 356 },
-            19: { sector: 2, time: "35.678", driver: "G. Russell", speed: 268 },
-            20: { sector: 2, time: "35.890", driver: "O. Piastri", speed: 262 },
-            21: { sector: 2, time: "36.012", driver: "L. Hamilton", speed: 258 },
-            22: { sector: 3, time: "36.234", driver: "M. Verstappen", speed: 265 },
-            23: { sector: 3, time: "36.456", driver: "G. Russell", speed: 271 },
-            24: { sector: 3, time: "36.678", driver: "C. Leclerc", speed: 278 },
-            25: { sector: 3, time: "36.890", driver: "O. Piastri", speed: 285 },
-            26: { sector: 3, time: "30.234", driver: "L. Norris", speed: 362 },
-            27: { sector: 3, time: "37.012", driver: "M. Verstappen", speed: 292 },
-            28: { sector: 3, time: "37.234", driver: "G. Russell", speed: 298 },
-            29: { sector: 3, time: "37.456", driver: "C. Leclerc", speed: 285 },
-            30: { sector: 3, time: "38.234", driver: "L. Hamilton", speed: 276 }
-        };
+    <!-- ViewBox: X [-600, 7600], Y [-3600, 8500] -->
+    <svg viewBox="-600 -3600 8200 12100" preserveAspectRatio="xMidYMid meet">
+        
+        <!-- Background grid -->
+        <defs>
+            <pattern id="grid" width="500" height="500" patternUnits="userSpaceOnUse">
+                <path d="M 500 0 L 0 0 0 500" fill="none" stroke="#1a1a2a" stroke-width="2"/>
+            </pattern>
+        </defs>
+        <rect x="-600" y="-3600" width="8200" height="12100" fill="url(#grid)"/>
+        
+        <!-- Inner grass -->
+        <ellipse cx="3500" cy="2500" rx="2500" ry="1800" fill="#0d1a0d"/>
+        
+        <!-- Track - using real Bahrain coordinates -->
+        <!-- The track goes from start/finish near coordinates (x≈-400, y≈800) clockwise -->
+        
+        <!-- Track base (asphalt) -->
+        <path d="
+            M -400 1200
+            L -300 1200
+            Q 100 1250, 500 1500
+            Q 900 1750, 1200 2200
+            Q 1500 2650, 1600 3200
+            Q 1700 3750, 1600 4300
+            Q 1500 4850, 1200 5300
+            Q 900 5750, 500 6000
+            Q 100 6250, -200 6200
+            Q -500 6150, -700 5800
+            Q -900 5450, -900 5000
+            Q -900 4550, -700 4200
+            Q -500 3850, -200 3600
+            Q 100 3350, 400 3200
+            Q 700 3050, 900 2800
+            Q 1100 2550, 1200 2200
+            L 1200 1800
+            Q 1100 1450, 700 1200
+            Q 300 950, -200 900
+            Q -600 850, -800 1000
+            Q -1000 1150, -1000 1400
+            Q -1000 1650, -800 1800
+            Q -600 1950, -300 1900
+            L -400 1200
+            Z
+        " fill="#2a2a3a" stroke="#3a3a4a" stroke-width="50"/>
+        
+        <!-- Racing line -->
+        <path d="
+            M -380 1150
+            Q 50 1180, 450 1400
+            Q 850 1620, 1150 2100
+            Q 1450 2580, 1550 3200
+            Q 1650 3820, 1550 4450
+            Q 1450 5080, 1150 5450
+            Q 850 5820, 450 6050
+            Q 50 6280, -250 6180
+            Q -550 6080, -750 5700
+            Q -950 5320, -950 4850
+            Q -950 4380, -750 4000
+            Q -550 3620, -250 3450
+            Q 50 3280, 350 3150
+            Q 650 3020, 900 2750
+            Q 1150 2480, 1250 2150
+            Q 1350 1820, 1200 1500
+            Q 1050 1180, 650 1000
+            Q 250 820, -250 850
+            Q -650 880, -850 1050
+            Q -1050 1220, -1050 1450
+            Q -1050 1680, -850 1850
+            Q -650 2020, -350 1950
+            Q -150 1900, -380 1150
+            Z
+        " fill="none" stroke="#4a4a5a" stroke-width="25" stroke-linecap="round"/>
 
-        document.querySelectorAll('.microsector').forEach(el => {
-            el.addEventListener('mouseenter', () => {
-                const id = parseInt(el.dataset.id);
-                const data = microsectorData[id];
-                if (data) {
-                    console.log(`Micro ${id}: ${data.driver} - ${data.time}s`);
-                }
-            });
-        });
-
-        document.querySelectorAll('.sector-card').forEach(card => {
-            card.addEventListener('mouseenter', () => {
-                const sectorNum = card.dataset.sector;
-                document.querySelectorAll('.sector-card').forEach(c => c.classList.remove('active'));
-                card.classList.add('active');
-                
-                document.querySelectorAll('.microsector').forEach(el => {
-                    const id = parseInt(el.dataset.id);
-                    let sector;
-                    if (id <= 10) sector = 1;
-                    else if (id <= 21) sector = 2;
-                    else sector = 3;
-                    
-                    el.style.opacity = (sector == sectorNum) ? '1' : '0.25';
-                });
-            });
-
-            card.addEventListener('mouseleave', () => {
-                document.querySelectorAll('.microsector').forEach(el => {
-                    el.style.opacity = '0.85';
-                });
-            });
-        });
-    </script>
+        <!-- Start/Finish line -->
+        <line x1="-500" y1="900" x2="-200" y2="900" stroke="#fff" stroke-width="20"/>
+        <text x="-350" y="850" fill="#fff" font-family="Orbitron" font-size="80" text-anchor="middle">START/FINISH</text>
+        
+        <!-- Corner markers -->
+        <text x="150" y="1850" fill="#666" font-family="Rajdhani" font-size="100" font-weight="600">T1</text>
+        <text x="1550" y="4200" fill="#666" font-family="Rajdhani" font-size="100" font-weight="600">T2</text>
+        <text x="1550" y="5300" fill="#666" font-family="Rajdhani" font-size="100" font-weight="600">T3</text>
+        <text x="-600" y="5000" fill="#666" font-family="Rajdhani" font-size="100" font-weight="600">T4</text>
+        <text x="-900" y="3500" fill="#666" font-family="Rajdhani" font-size="100" font-weight="600">T5</text>
+        <text x="350" y="2800" fill="#666" font-family="Rajdhani" font-size="100" font-weight="600">T6</text>
+        <text x="1250" y="1800" fill="#666" font-family="Rajdhani" font-size="100" font-weight="600">T7</text>
+        <text x="-850" y="1100" fill="#666" font-family="Rajdhani" font-size="100" font-weight="600">T8</text>
+        <text x="-350" y="1800" fill="#666" font-family="Rajdhani" font-size="100" font-weight="600">T9</text>
+        <text x="-350" y="3200" fill="#666" font-family="Rajdhani" font-size="100" font-weight="600">T10</text>
+        <text x="150" y="4000" fill="#666" font-family="Rajdhani" font-size="100" font-weight="600">T11</text>
+        <text x="1550" y="3000" fill="#666" font-family="Rajdhani" font-size="100" font-weight="600">T12</text>
+        <text x="500" y="1200" fill="#666" font-family="Rajdhani" font-size="100" font-weight="600">T13</text>
+        
+        <!-- Sector labels -->
+        <text x="500" y="6000" fill="#00f0ff" font-family="Orbitron" font-size="150" font-weight="700">SETOR 1</text>
+        <text x="-200" y="2500" fill="#00ff88" font-family="Orbitron" font-size="150" font-weight="700">SETOR 2</text>
+        <text x="1000" y="1000" fill="#aa44ff" font-family="Orbitron" font-size="150" font-weight="700">SETOR 3</text>
+    </svg>
 </body>
 </html>
