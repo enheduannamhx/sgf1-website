@@ -362,7 +362,7 @@
         <div class="sidebar">
             <div class="card">
                 <div class="lap-label">BEST LAP</div>
-                <div class="lap-time" id="lapTime">1:33.755</div>
+                <div class="lap-time" id="lapTime">1:33</div>
                 
                 <div class="sectors">
                     <div class="sector">
@@ -390,10 +390,6 @@
                     <div class="telemetry-item">
                         <div class="telemetry-value gear" id="gearValue">N</div>
                         <div class="telemetry-label">GEAR</div>
-                    </div>
-                    <div class="telemetry-item">
-                        <div class="telemetry-value rpm" id="rpmValue">0</div>
-                        <div class="telemetry-label">RPM</div>
                     </div>
                     <div class="telemetry-item">
                         <div class="telemetry-value throttle" id="throttleValue">0%</div>
@@ -442,12 +438,12 @@
                         <div class="lap-info-label">TYRE</div>
                     </div>
                     <div class="lap-info-item">
-                        <div class="lap-info-value" id="tyresValue">35</div>
-                        <div class="lap-info-label">LAPS</div>
+                        <div class="lap-info-value" id="sessionValue">T2S3</div>
+                        <div class="lap-info-label">SESSION</div>
                     </div>
                     <div class="lap-info-item">
-                        <div class="lap-info-value" id="posValue">16</div>
-                        <div class="lap-info-label">POS</div>
+                        <div class="lap-info-value" id="dayValue">22/FEV</div>
+                        <div class="lap-info-label">DAY</div>
                     </div>
                 </div>
             </div>
@@ -478,13 +474,10 @@
                 telemetryData = data.telemetry;
                 totalTime = data.metadata.total_time_ms;
                 
-                document.getElementById('lapTime').textContent = data.metadata.lap_time;
-                document.getElementById('sector1').textContent = data.metadata.sectors.s1.toFixed(3);
-                document.getElementById('sector2').textContent = data.metadata.sectors.s2.toFixed(3);
-                document.getElementById('sector3').textContent = data.metadata.sectors.s3.toFixed(3);
+                document.getElementById('lapTime').textContent = data.metadata.lap_time.replace('.', '');
                 document.getElementById('compoundValue').textContent = data.metadata.compound;
-                document.getElementById('tyresValue').textContent = data.metadata. tyreLaps;
-                document.getElementById('posValue').textContent = data.metadata.position;
+                document.getElementById('sessionValue').textContent = 'T2S3';
+                document.getElementById('dayValue').textContent = '22/FEV';
                 
                 initPlot();
             } catch (e) {
@@ -584,10 +577,9 @@
             // Timeline
             document.getElementById('timelineProgress').style.width = `${progress * 100}%`;
             
-            // Telemetry - using new field names
-            document.getElementById('speedValue').textContent = d.speed_kmh;
+            // Telemetry - using new field names (integer speed)
+            document.getElementById('speedValue').textContent = Math.round(d.speed_kmh);
             document.getElementById('gearValue').textContent = d.gear;
-            document.getElementById('rpmValue').textContent = d.rpm;
             document.getElementById('throttleValue').textContent = `${Math.round(d.throttle_pct)}%`;
             
             // Speed bar
