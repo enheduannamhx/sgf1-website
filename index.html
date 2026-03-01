@@ -476,15 +476,15 @@
                 totalTime = data.metadata.total_time_ms;
                 
                 telemetryData = data.telemetry;
-                totalTime = data.totalTime;
+                totalTime = data.metadata.total_time_ms;
                 
-                document.getElementById('lapTime').textContent = data.lapTime;
-                document.getElementById('sector1').textContent = data.sectors.s1.toFixed(3);
-                document.getElementById('sector2').textContent = data.sectors.s2.toFixed(3);
-                document.getElementById('sector3').textContent = data.sectors.s3.toFixed(3);
-                document.getElementById('compoundValue').textContent = data.compound;
-                document.getElementById('tyresValue').textContent = data. tyreLaps;
-                document.getElementById('posValue').textContent = data.position;
+                document.getElementById('lapTime').textContent = data.metadata.lap_time;
+                document.getElementById('sector1').textContent = data.metadata.sectors.s1.toFixed(3);
+                document.getElementById('sector2').textContent = data.metadata.sectors.s2.toFixed(3);
+                document.getElementById('sector3').textContent = data.metadata.sectors.s3.toFixed(3);
+                document.getElementById('compoundValue').textContent = data.metadata.compound;
+                document.getElementById('tyresValue').textContent = data.metadata. tyreLaps;
+                document.getElementById('posValue').textContent = data.metadata.position;
                 
                 initPlot();
             } catch (e) {
