@@ -18,15 +18,15 @@
             min-height: 100vh;
         }
         h1 {
-            font-size: 36px;
+            font-size: 42px;
             background: linear-gradient(135deg, #00f0ff, #ff00aa);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            margin: 0 0 10px 0;
+            margin: 0;
         }
         .subtitle {
             color: #888;
-            margin-bottom: 20px;
+            margin: 10px 0 20px;
             font-size: 14px;
         }
         svg {
@@ -34,19 +34,23 @@
             border-radius: 12px;
             max-width: 100%;
         }
-        .track {
+        .track-base {
             fill: none;
-            stroke: #333;
-            stroke-width: 35;
+            stroke: #222;
+            stroke-width: 30;
             stroke-linecap: round;
             stroke-linejoin: round;
+        }
+        .track-line {
+            fill: none;
+            stroke: #444;
+            stroke-width: 20;
         }
         .racing-line {
             fill: none;
             stroke: #00f0ff;
-            stroke-width: 3;
-            stroke-dasharray: 10 8;
-            opacity: 0.6;
+            stroke-width: 2;
+            opacity: 0.7;
         }
         .start-line {
             stroke: #fff;
@@ -54,15 +58,6 @@
         }
         text {
             font-family: 'Orbitron', sans-serif;
-            font-weight: 600;
-        }
-        .corner-label {
-            fill: #666;
-            font-size: 10px;
-        }
-        .sector-label {
-            font-size: 14px;
-            font-weight: 700;
         }
     </style>
 </head>
@@ -70,128 +65,106 @@
     <h1>SG<span style="color:#00f0ff">F1</span></h1>
     <p class="subtitle">BAHRAIN INTERNATIONAL CIRCUIT • 5.412 km</p>
     
-    <!-- Bahrain Circuit - Simple & Accurate -->
-    <svg viewBox="0 0 600 450" width="900" height="675">
+    <!-- Bahrain F1 Circuit Layout - Accurate Shape -->
+    <svg viewBox="0 0 500 400" width="900" height="720">
         
         <!-- Background -->
-        <rect width="600" height="450" fill="#0a0a0f"/>
+        <rect width="500" height="400" fill="#0a0a0f"/>
         
-        <!-- Grid pattern -->
+        <!-- Grid -->
         <defs>
             <pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse">
                 <path d="M 50 0 L 0 0 0 50" fill="none" stroke="#151520" stroke-width="1"/>
             </pattern>
         </defs>
-        <rect width="600" height="450" fill="url(#grid)"/>
+        <rect width="500" height="400" fill="url(#grid)"/>
         
-        <!-- Inner grass -->
-        <ellipse cx="300" cy="225" rx="180" ry="120" fill="#0d1a0d"/>
+        <!-- Inner grass (oval) -->
+        <ellipse cx="250" cy="200" rx="150" ry="100" fill="#0d1a0d"/>
         
-        <!-- Track - Outer shape with correct Bahrain layout -->
-        <path class="track" d="
-            M 480 350
-            L 520 350
-            Q 580 350 580 290
-            Q 580 230 520 200
-            Q 460 170 400 170
-            Q 340 170 280 200
-            Q 220 230 180 290
-            Q 140 350 80 350
-            Q 20 350 20 290
-            Q 20 230 60 190
-            Q 100 150 160 140
-            Q 220 130 260 160
-            Q 300 190 320 230
-            Q 340 270 340 310
-            Q 340 350 300 370
-            Q 260 390 220 380
-            Q 180 370 160 340
-            Q 140 310 160 280
-            Q 180 250 220 250
-            Q 260 250 280 280
-            Q 300 310 300 350
-            Q 300 390 260 400
-            Q 220 410 180 390
-            Q 140 370 120 330
-            Q 100 290 120 250
-            Q 140 210 180 200
-            Q 220 190 260 210
-            Q 300 230 320 270
-            Q 340 310 340 350
-            Q 340 390 300 410
-            Q 260 430 200 420
-            Q 140 410 100 370
-            Q 60 330 60 280
-            Q 60 230 100 200
-            Q 140 170 200 170
-            Q 260 170 300 200
-            Q 340 230 360 280
-            Q 380 330 380 350
-            L 480 350
+        <!-- Track - Bahrain Grand Prix Layout -->
+        <!-- Start/Finish on the right side, going clockwise -->
+        
+        <!-- Outer track shape -->
+        <path class="track-base" d="
+            M 420 200
+            L 450 200
+            Q 480 200 480 170
+            Q 480 120 420 80
+            Q 360 40 280 40
+            Q 200 40 140 80
+            Q 80 120 60 180
+            Q 40 240 60 300
+            Q 80 360 140 380
+            Q 200 400 280 400
+            Q 360 400 420 360
+            Q 480 320 480 260
+            L 420 260
             Z
         "/>
         
-        <!-- Racing line -->
-        <path class="racing-line" d="
-            M 480 350
-            L 520 350
-            Q 570 345 570 295
-            Q 570 245 520 215
-            Q 470 185 410 185
-            Q 350 185 290 215
-            Q 230 245 195 295
-            Q 160 345 110 345
-            Q 60 345 60 295
-            Q 60 245 95 205
-            Q 130 165 185 155
-            Q 240 145 275 175
-            Q 310 205 330 245
-            Q 350 285 350 320
-            Q 350 355 315 370
-            Q 280 385 245 378
-            Q 210 370 195 345
-            Q 180 320 195 295
-            Q 210 270 245 270
-            Q 280 270 300 295
-            Q 320 320 320 355
-            Q 320 390 285 398
-            Q 250 405 215 388
-            Q 180 370 165 340
-            Q 150 310 165 280
-            Q 180 250 215 240
-            Q 250 230 285 250
-            Q 320 270 335 305
-            Q 350 340 350 365
-            Q 350 400 310 415
-            Q 270 430 220 422
-            Q 170 412 135 380
-            Q 100 348 100 305
-            Q 100 262 135 232
-            Q 170 202 225 202
-            Q 280 202 315 232
-            Q 350 262 365 305
-            Q 380 348 380 365
-            L 480 365
+        <!-- Inner track (the infield) -->
+        <path class="track-base" d="
+            M 380 220
+            L 340 220
+            Q 320 220 320 200
+            Q 320 180 340 160
+            L 360 140
+            Q 380 120 380 100
+            Q 380 80 340 70
+            Q 300 60 260 60
+            Q 220 60 180 80
+            Q 140 100 120 140
+            Q 100 180 100 220
+            Q 100 260 120 290
+            Q 140 320 180 320
+            Q 220 320 240 290
+            L 220 270
+            Q 200 250 180 250
+            Q 160 250 150 270
+            Q 140 290 150 310
+            Q 160 330 190 330
+            Q 220 330 250 310
+            L 280 290
+            Q 320 260 340 240
+            Q 360 220 380 220
+            Z
         "/>
         
-        <!-- Start/Finish Line -->
-        <line x1="460" y1="335" x2="460" y2="365" class="start-line"/>
-        <text x="460" y="385" fill="#fff" font-size="9" text-anchor="middle">START/FINISH</text>
+        <!-- Racing line - approximate path through the circuit -->
+        <path class="racing-line" d="
+            M 430 200
+            L 460 200
+            Q 475 195 470 175
+            Q 465 145 430 100
+            Q 395 55 340 50
+            Q 285 45 235 70
+            Q 185 95 150 140
+            Q 115 185 105 240
+            Q 95 295 125 345
+            Q 155 395 220 395
+            Q 285 395 345 365
+            Q 405 335 435 275
+            L 430 200
+        "/>
         
-        <!-- Corner Labels -->
-        <text x="520" y="280" class="corner-label">T1</text>
-        <text x="400" y="160" class="corner-label">T2</text>
-        <text x="250" y="150" class="corner-label">T3</text>
-        <text x="100" y="250" class="corner-label">T4</text>
-        <text x="80" y="350" class="corner-label">T5</text>
-        <text x="150" y="420" class="corner-label">T6</text>
-        <text x="300" y="435" class="corner-label">T7</text>
-        <text x="380" y="350" class="corner-label">T8</text>
+        <!-- Start/Finish -->
+        <line x1="420" y1="185" x2="420" y2="215" class="start-line"/>
+        <text x="420" y="230" fill="#fff" font-size="10" text-anchor="middle">S/F</text>
         
-        <!-- Sector Labels -->
-        <text x="450" y="100" fill="#00f0ff" class="sector-label">SETOR 1</text>
-        <text x="200" y="100" fill="#00ff88" class="sector-label">SETOR 2</text>
-        <text x="150" y="400" fill="#aa44ff" class="sector-label">SETOR 3</text>
+        <!-- Turn labels -->
+        <text x="430" y="150" fill="#666" font-size="9">T1</text>
+        <text x="300" y="30" fill="#666" font-size="9">T2</text>
+        <text x="120" y="140" fill="#666" font-size="9">T3</text>
+        <text x="50" y="280" fill="#666" font-size="9">T4</text>
+        <text x="100" y="380" fill="#666" font-size="9">T5</text>
+        <text x="280" y="420" fill="#666" font-size="9">T6</text>
+        <text x="420" y="320" fill="#666" font-size="9">T7</text>
+        
+        <!-- Sector labels -->
+        <text x="400" y="80" fill="#00f0ff" font-size="12" font-weight="700">SETOR 1</text>
+        <text x="150" y="420" fill="#00ff88" font-size="12" font-weight="700">SETOR 2</text>
+        <text x="350" y="350" fill="#aa44ff" font-size="12" font-weight="700">SETOR 3</text>
     </svg>
 </body>
 </html>
