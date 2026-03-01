@@ -612,15 +612,11 @@
                 document.getElementById('s3Prog').textContent = `${Math.round((progress - 0.66) / 0.34 * 100)}%`;
             }
             
-            // Update plot - optimized for smooth animation
-            Plotly.animate('track-plot', {
-                data: [{x: [d.x], y: [d.y]}],
-                traces: [3],
-                layout: {}
-            }, {
-                transition: {duration: 0},
-                frame: {duration: 0, redraw: false}
-            });
+            // Update just the car marker position - much faster
+            Plotly.restyle('track-plot', {
+                x: [[d.x]],
+                y: [[d.y]]
+            }, [3]);
         }
         
         // Play/Pause
@@ -643,19 +639,27 @@
             updateDisplay(currentIndex);
         });
         
-        // Play loop - real time with smooth interpolation
+        // Play loop - 100Hz real-time sync
         function playLoop() {
             if (!isPlaying) return;
             
             const now = performance.now();
             const elapsed = now - lastTime;
             
-            // Each ms advances one point (100 Hz data)
-            const msPerPoint = totalTime / telemetryData.length;
+            // Target: 100 updates per second = 10ms per frame
+            const targetFPS = 100;
+            const msPerFrame = 1000 / targetFPS;
             
-            while (elapsed >= msPerPoint && currentIndex < telemetryData.length - 1) {
-                lastTime -= msPerPoint;
-                currentIndex++;
+            // Calculate how many points should have passed
+            const msPerPoint = totalTime / telemetryData.length;
+            const pointsToAdvance = Math.floor(elapsed / msPerPoint);
+            
+            if (pointsToAdvance > 0 && currentIndex < telemetryData.length - 1) {
+                // Advance multiple points if needed (but cap at reasonable amount)
+                const maxAdvance = Math.min(pointsToAdvance, 10);
+                currentIndex = Math.min(currentIndex + maxAdvance, telemetryData.length - 1);
+                lastTime = now - ((elapsed) % msPerPoint);
+                
                 updateDisplay(currentIndex);
             }
             
