@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SG F1 - Bortoleto vs Hulkenberg</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <style>
+        :root {
+            --primary: #00f0ff;
+            --bg-dark: #0a0a0f;
+            --bg-card: #12121a;
+            --text: #fff;
+            --text-dim: #888;
+            --success: #00ff88;
+            --audi-red: #d61818;
+            --audi-green: #00cc66;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            background: var(--bg-dark);
+            font-family: 'Roboto', sans-serif;
+            color: var(--text);
+            min-height: 100vh;
+        }
+        
+        header {
+            background: linear-gradient(135deg, rgba(214,24,24,0.3), rgba(0,204,102,0.3));
+            padding: 15px 20px;
+            border-bottom: 3px solid #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .driver-badge {
+            padding: 5px 15px;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        
+        .driver-badge.bor { background: var(--audi-red); }
+        .driver-badge.hul { background: var(--audi-green); color: #000; }
+        
+        .subtitle {
+            color: var(--text-dim);
+            font-size: 12px;
+        }
+        
+        .main-container {
+            display: grid;
+            grid-template-columns: 1fr 320px 320px;
+            gap: 15px;
+            padding: 15px;
+            max-width: 1800px;
+            margin: 0 auto;
+        }
+        
+        @media (max-width: 1200px) {
+            .main-container { grid-template-columns: 1fr; }
+        }
+        
+        .track-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 15px;
+            border: 1px solid #333;
+        }
+        
+        #track-plot { width: 100%; height: 500px; background: #050508; border-radius: 8px; }
+        
+        .controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 12px;
+            padding: 12px;
+            background: #1a1a25;
+            border-radius: 10px;
+        }
+        
+        .play-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--audi-red), var(--audi-green));
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .play-btn svg { fill: #fff; width: 16px; height: 16px; }
+        
+        .timeline {
+            flex: 1;
+            height: 8px;
+            background: #333;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .timeline-progress {
+            height: 100%;
+            background: linear-gradient(90deg, var(--audi-red), var(--audi-green));
+            border-radius: 4px;
+            width: 0%;
+        }
+        
+        .time-display {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 18px;
+            color: var(--primary);
+            min-width: 75px;
+            text-align: right;
+        }
+        
+        .driver-panel {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 15px;
+            border: 1px solid #333;
+        }
+        
+        .driver-panel.bor { border-top: 4px solid var(--audi-red); }
+        .driver-panel.hul { border-top: 4px solid var(--audi-green); }
+        
+        .driver-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .driver-name {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        .driver-team {
+            font-size: 11px;
+            color: var(--text-dim);
+        }
+        
+        .lap-time {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 42px;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        
+        .bor .lap-time { color: var(--audi-red); }
+        .hul .lap-time { color: var(--audi-green); }
+        
+        .sectors {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+        
+        .sector {
+            background: #1a1a25;
+            padding: 8px;
+            border-radius: 6px;
+            text-align: center;
+        }
+        
+        .sector-label { font-size: 9px; color: var(--text-dim); text-transform: uppercase; }
+        .sector-time { font-family: 'Orbitron', sans-serif; font-size: 13px; margin-top: 3px; }
+        
+        .telemetry-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+        }
+        
+        .telemetry-item {
+            background: #1a1a25;
+            padding: 10px;
+            border-radius: 6px;
+            text-align: center;
+        }
+        
+        .telemetry-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 22px;
+            font-weight: bold;
+        }
+        
+        .telemetry-label { font-size: 9px; color: var(--text-dim); margin-top: 2px; }
+        
+        .speed { color: var(--primary); }
+        .gear { color: var(--success); }
+        .throttle { color: #ffaa00; }
+        
+        .speed-bar {
+            height: 16px;
+            background: linear-gradient(90deg, #00ff88, #ffff00, #ff4444);
+            border-radius: 8px;
+            margin: 10px 0 5px;
+            position: relative;
+        }
+        
+        .speed-marker {
+            position: absolute;
+            top: -2px;
+            bottom: -2px;
+            width: 4px;
+            background: #fff;
+            border-radius: 2px;
+        }
+        
+        .speed-labels { display: flex; justify-content: space-between; font-size: 9px; color: var(--text-dim); }
+        
+        .status-bars { display: flex; gap: 8px; margin-top: 10px; }
+        
+        .status-bar {
+            flex: 1;
+            height: 28px;
+            background: #1a1a25;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 10px;
+        }
+        
+        .status-bar.active { background: #ff4444; color: #fff; }
+        
+        .info-row {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #333;
+        }
+        
+        .info-item { text-align: center; }
+        .info-value { font-family: 'Orbitron', sans-serif; font-size: 14px; }
+        .info-label { font-size: 9px; color: var(--text-dim); }
+        
+        .vs-badge {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 20px;
+            font-weight: bold;
+            text-align: center;
+            padding: 10px;
+            background: #1a1a25;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+        
+        .loading { text-align: center; padding: 50px; color: var(--text-dim); }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>
+            SG<span style="color:#00f0ff">F1</span>
+            <span class="driver-badge bor">BOR</span>
+            <span style="color:#666;font-size:14px">vs</span>
+            <span class="driver-badge hul">HUL</span>
+        </h1>
+        <div class="subtitle">BAHRAIN • PRE-SEASON 2026 • COMPARISON</div>
+    </header>
+    
+    <div class="main-container">
+        <div class="track-card">
+            <div id="track-plot"><div class="loading">Carregando...</div></div>
+            
+            <div class="controls">
+                <button class="play-btn" id="playBtn">
+                    <svg viewBox="0 0 24 24" id="playIcon"><polygon points="5,3 19,12 5,21"/></svg>
+                    <svg viewBox="0 0 24 24" id="pauseIcon" style="display:none"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+                </button>
+                <div class="timeline" id="timeline">
+                    <div class="timeline-progress" id="timelineProgress"></div>
+                </div>
+                <div class="time-display" id="timeDisplay">0:00.00</div>
+            </div>
+        </div>
+        
+        <!-- Bortoleto Panel -->
+        <div class="driver-panel bor">
+            <div class="driver-header">
+                <div>
+                    <div class="driver-name">BOR</div>
+                    <div class="driver-team">Gabriel Bortoleto • Audi</div>
+                </div>
+            </div>
+            
+            <div class="lap-time" id="borLapTime">1:33</div>
+            
+            <div class="sectors">
+                <div class="sector">
+                    <div class="sector-label">S1</div>
+                    <div class="sector-time" id="borS1">31.23</div>
+                </div>
+                <div class="sector">
+                    <div class="sector-label">S2</div>
+                    <div class="sector-time" id="borS2">31.56</div>
+                </div>
+                <div class="sector">
+                    <div class="sector-label">S3</div>
+                    <div class="sector-time" id="borS3">30.95</div>
+                </div>
+            </div>
+            
+            <div class="telemetry-grid">
+                <div class="telemetry-item">
+                    <div class="telemetry-value speed" id="borSpeed">0</div>
+                    <div class="telemetry-label">km/h</div>
+                </div>
+                <div class="telemetry-item">
+                    <div class="telemetry-value gear" id="borGear">N</div>
+                    <div class="telemetry-label">GEAR</div>
+                </div>
+                <div class="telemetry-item">
+                    <div class="telemetry-value throttle" id="borThrottle">0%</div>
+                    <div class="telemetry-label">THROTTLE</div>
+                </div>
+            </div>
+            
+            <div class="speed-bar">
+                <div class="speed-marker" id="borSpeedMarker" style="left:0%"></div>
+            </div>
+            <div class="speed-labels"><span>0</span><span>175</span><span>350</span></div>
+            
+            <div class="status-bars">
+                <div class="status-bar" id="borBrake">BRAKE</div>
+            </div>
+            
+            <div class="info-row">
+                <div class="info-item">
+                    <div class="info-value" id="borCompound">MEDIUM</div>
+                    <div class="info-label">TYRE</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-value" id="borSession">T2S3</div>
+                    <div class="info-label">SESSION</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-value" id="borDiff">-0.23</div>
+                    <div class="info-label">VS HUL</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Hulkenberg Panel -->
+        <div class="driver-panel hul">
+            <div class="driver-header">
+                <div>
+                    <div class="driver-name">HUL</div>
+                    <div class="driver-team">Nico Hulkenberg • Audi</div>
+                </div>
+            </div>
+            
+            <div class="lap-time" id="hulLapTime">1:33</div>
+            
+            <div class="sectors">
+                <div class="sector">
+                    <div class="sector-label">S1</div>
+                    <div class="sector-time" id="hulS1">29.74</div>
+                </div>
+                <div class="sector">
+                    <div class="sector-label">S2</div>
+                    <div class="sector-time" id="hulS2">41.04</div>
+                </div>
+                <div class="sector">
+                    <div class="sector-label">S3</div>
+                    <div class="sector-time" id="hulS3">23.20</div>
+                </div>
+            </div>
+            
+            <div class="telemetry-grid">
+                <div class="telemetry-item">
+                    <div class="telemetry-value speed" id="hulSpeed">0</div>
+                    <div class="telemetry-label">km/h</div>
+                </div>
+                <div class="telemetry-item">
+                    <div class="telemetry-value gear" id="hulGear">N</div>
+                    <div class="telemetry-label">GEAR</div>
+                </div>
+                <div class="telemetry-item">
+                    <div class="telemetry-value throttle" id="hulThrottle">0%</div>
+                    <div class="telemetry-label">THROTTLE</div>
+                </div>
+            </div>
+            
+            <div class="speed-bar">
+                <div class="speed-marker" id="hulSpeedMarker" style="left:0%"></div>
+            </div>
+            <div class="speed-labels"><span>0</span><span>175</span><span>350</span></div>
+            
+            <div class="status-bars">
+                <div class="status-bar" id="hulBrake">BRAKE</div>
+            </div>
+            
+            <div class="info-row">
+                <div class="info-item">
+                    <div class="info-value" id="hulCompound">MEDIUM</div>
+                    <div class="info-label">TYRE</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-value" id="hulSession">T2S2</div>
+                    <div class="info-label">SESSION</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-value" id="hulDiff">+0.23</div>
+                    <div class="info-label">VS BOR</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let borData = [], hulData = [];
+        let currentIndex = 0, isPlaying = false, lastTime = 0;
+        const TOTAL_POINTS = 9375;
+        const LAP_TIME_MS = 93987; // Use the longer one (Hulkenberg)
+        
+        async function loadData() {
+            try {
+                const [borRes, hulRes] = await Promise.all([
+                    fetch('bortoleto_100hz.json'),
+                    fetch('hulkenberg_100hz.json')
+                ]);
+                
+                const borJson = await borRes.json();
+                const hulJson = await hulRes.json();
+                
+                borData = borJson.telemetry;
+                hulData = hulJson.telemetry;
+                
+                // Update UI with metadata
+                document.getElementById('borLapTime').textContent = borJson.metadata.lap_time.replace('.', '');
+                document.getElementById('borS1').textContent = borJson.metadata.sectors.s1.toFixed(2);
+                document.getElementById('borS2').textContent = borJson.metadata.sectors.s2.toFixed(2);
+                document.getElementById('borS3').textContent = borJson.metadata.sectors.s3.toFixed(2);
+                document.getElementById('borCompound').textContent = borJson.metadata.compound;
+                document.getElementById('borSession').textContent = borJson.metadata.session;
+                
+                document.getElementById('hulLapTime').textContent = hulJson.metadata.lap_time.replace('.', '');
+                document.getElementById('hulS1').textContent = hulJson.metadata.sectors.s1.toFixed(2);
+                document.getElementById('hulS2').textContent = hulJson.metadata.sectors.s2.toFixed(2);
+                document.getElementById('hulS3').textContent = hulJson.metadata.sectors.s3.toFixed(2);
+                document.getElementById('hulCompound').textContent = hulJson.metadata.compound;
+                document.getElementById('hulSession').textContent = hulJson.metadata.session;
+                
+                // Calculate diff
+                const borSec = parseFloat(borJson.metadata.lap_time);
+                const hulSec = parseFloat(hulJson.metadata.lap_time);
+                const diff = hulSec - borSec;
+                document.getElementById('borDiff').textContent = diff >= 0 ? `-${Math.abs(diff).toFixed(2)}` : `+${Math.abs(diff).toFixed(2)}`;
+                document.getElementById('hulDiff').textContent = diff >= 0 ? `+${diff.toFixed(2)}` : `-${Math.abs(diff).toFixed(2)}`;
+                
+                initPlot();
+            } catch (e) {
+                console.error('Error:', e);
+                document.getElementById('track-plot').innerHTML = '<div class="loading">Erro ao carregar dados</div>';
+            }
+        }
+        
+        function initPlot() {
+            // Use Bortoleto as base track
+            const x = borData.map(t => t.x);
+            const y = borData.map(t => t.y);
+            
+            const trackTrace = {
+                x: x, y: y,
+                mode: 'lines', line: { color: '#222', width: 40 },
+                name: 'Pista', hoverinfo: 'skip'
+            };
+            
+            const racingLine = {
+                x: x, y: y,
+                mode: 'lines', line: { color: '#00f0ff', width: 2, dash: 'dash' },
+                name: 'Linha', opacity: 0.5, hoverinfo: 'skip'
+            };
+            
+            // Bortoleto trail (red)
+            const borTrail = {
+                x: [x[0]], y: [y[0]],
+                mode: 'lines', line: { color: '#d61818', width: 3 },
+                name: 'BOR Trail', hoverinfo: 'skip'
+            };
+            
+            // Hulkenberg trail (green)
+            const hulTrail = {
+                x: [hulData[0].x], y: [hulData[0].y],
+                mode: 'lines', line: { color: '#00cc66', width: 3 },
+                name: 'HUL Trail', hoverinfo: 'skip'
+            };
+            
+            // Car markers
+            const borCar = {
+                x: [x[0]], y: [y[0]],
+                mode: 'markers', marker: { size: 18, color: '#d61818', line: { color: '#fff', width: 2 } },
+                name: 'BOR', hoverinfo: 'skip'
+            };
+            
+            const hulCar = {
+                x: [hulData[0].x], y: [hulData[0].y],
+                mode: 'markers', marker: { size: 18, color: '#00cc66', line: { color: '#fff', width: 2 } },
+                name: 'HUL', hoverinfo: 'skip'
+            };
+            
+            Plotly.newPlot('track-plot', [trackTrace, racingLine, borTrail, hulTrail, borCar, hulCar], {
+                paper_bgcolor: '#050508', plot_bgcolor: '#050508',
+                showlegend: false,
+                margin: { t: 10, b: 10, l: 10, r: 10 },
+                xaxis: { range: [Math.min(...x)-100, Math.max(...x)+100], showgrid: false, zeroline: false, showticklabels: false },
+                yaxis: { range: [Math.min(...y)-100, Math.max(...y)+100], showgrid: false, zeroline: false, showticklabels: false, scaleanchor: 'x', scaleratio: 1 }
+            }, { displayModeBar: false, responsive: true });
+            
+            updateDisplay(0);
+        }
+        
+        function updateDisplay(index) {
+            const bor = borData[index] || borData[0];
+            const hul = hulData[index] || hulData[0];
+            const progress = index / TOTAL_POINTS;
+            
+            // Time
+            const secs = bor.time_sec;
+            document.getElementById('timeDisplay').textContent = `${Math.floor(secs/60)}:${(secs%60).toFixed(2).padStart(5,'0')}`;
+            document.getElementById('timelineProgress').style.width = `${progress*100}%`;
+            
+            // Bortoleto
+            document.getElementById('borSpeed').textContent = Math.round(bor.speed_kmh);
+            document.getElementById('borGear').textContent = bor.gear;
+            document.getElementById('borThrottle').textContent = `${Math.round(bor.throttle_pct)}%`;
+            document.getElementById('borSpeedMarker').style.left = `${Math.min(100, bor.speed_kmh/350*100)}%`;
+            document.getElementById('borBrake').classList.toggle('active', bor.brake);
+            
+            // Hulkenberg
+            document.getElementById('hulSpeed').textContent = Math.round(hul.speed_kmh);
+            document.getElementById('hulGear').textContent = hul.gear;
+            document.getElementById('hulThrottle').textContent = `${Math.round(hul.throttle_pct)}%`;
+            document.getElementById('hulSpeedMarker').style.left = `${Math.min(100, hul.speed_kmh/350*100)}%`;
+            document.getElementById('hulBrake').classList.toggle('active', hul.brake);
+            
+            // Plot
+            Plotly.restyle('track-plot', {
+                x: [[bor.x], [hul.x], [borData.slice(0,index+1).map(t=>t.x)], [hulData.slice(0,index+1).map(t=>t.x)]],
+                y: [[bor.y], [hul.y], [borData.slice(0,index+1).map(t=>t.y)], [hulData.slice(0,index+1).map(t=>t.y)]]
+            }, [4, 5, 2, 3]);
+        }
+        
+        document.getElementById('playBtn').addEventListener('click', () => {
+            isPlaying = !isPlaying;
+            document.getElementById('playIcon').style.display = isPlaying ? 'none' : 'block';
+            document.getElementById('pauseIcon').style.display = isPlaying ? 'block' : 'none';
+            if (isPlaying) { lastTime = performance.now(); playLoop(); }
+        });
+        
+        document.getElementById('timeline').addEventListener('click', (e) => {
+            const rect = e.target.getBoundingClientRect();
+            currentIndex = Math.floor((e.clientX - rect.left) / rect.width * TOTAL_POINTS);
+            updateDisplay(currentIndex);
+        });
+        
+        function playLoop() {
+            if (!isPlaying) return;
+            const now = performance.now();
+            const elapsed = now - lastTime;
+            const msPerPoint = LAP_TIME_MS / TOTAL_POINTS;
+            
+            if (elapsed >= msPerPoint && currentIndex < TOTAL_POINTS - 1) {
+                lastTime = now;
+                currentIndex++;
+                updateDisplay(currentIndex);
+            }
+            
+            if (currentIndex >= TOTAL_POINTS - 1) {
+                isPlaying = false;
+                document.getElementById('playIcon').style.display = 'block';
+                document.getElementById('pauseIcon').style.display = 'none';
+                return;
+            }
+            requestAnimationFrame(playLoop);
+        }
+        
+        loadData();
+    </script>
+</body>
+</html>
