@@ -469,8 +469,11 @@
         // Load data
         async function loadData() {
             try {
-                const response = await fetch('bortoleto_smooth.json');
+                const response = await fetch('bortoleto_100hz.json');
                 const data = await response.json();
+                
+                telemetryData = data.telemetry;
+                totalTime = data.metadata.total_time_ms;
                 
                 telemetryData = data.telemetry;
                 totalTime = data.totalTime;
@@ -573,7 +576,7 @@
             const progress = index / telemetryData.length;
             
             // Time
-            const secs = d.time / 1000;
+            const secs = d.time_sec;
             const mins = Math.floor(secs / 60);
             const s = (secs % 60).toFixed(3);
             document.getElementById('timeDisplay').textContent = `${mins}:${s.padStart(6, '0')}`;
@@ -581,14 +584,14 @@
             // Timeline
             document.getElementById('timelineProgress').style.width = `${progress * 100}%`;
             
-            // Telemetry
-            document.getElementById('speedValue').textContent = d.speed;
+            // Telemetry - using new field names
+            document.getElementById('speedValue').textContent = d.speed_kmh;
             document.getElementById('gearValue').textContent = d.gear;
-            document.getElementById('rpmValue').textContent = Math.round(d.rpm);
-            document.getElementById('throttleValue').textContent = `${Math.round(d.throttle)}%`;
+            document.getElementById('rpmValue').textContent = d.rpm;
+            document.getElementById('throttleValue').textContent = `${Math.round(d.throttle_pct)}%`;
             
             // Speed bar
-            document.getElementById('speedMarker').style.left = `${Math.min(100, (d.speed / 350) * 100)}%`;
+            document.getElementById('speedMarker').style.left = `${Math.min(100, (d.speed_kmh / 350) * 100)}%`;
             
             // Status
             document.getElementById('brakeBar').classList.toggle('active', d.brake);
