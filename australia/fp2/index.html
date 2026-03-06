@@ -176,28 +176,29 @@
             const x = telemetryData.map(t => t.x);
             const y = telemetryData.map(t => t.y);
             
-            // Track background (thick line)
+            // Track background - gray border representing the actual track
             trackTrace = {
                 x: x,
                 y: y,
                 mode: 'lines',
-                line: { color: '#222', width: 40 },
+                line: { color: '#444', width: 55 },
                 name: 'Pista',
                 hoverinfo: 'skip'
             };
             
-            // Racing line (thin line)
-            racingLine = {
+            // Racing line removed - only showing track border now
+            
+            // Inner track line (optional subtle center)
+            const innerTrace = {
                 x: x,
                 y: y,
                 mode: 'lines',
-                line: { color: '#00f0ff', width: 2, dash: 'dash' },
-                name: 'Linha',
-                opacity: 0.5,
+                line: { color: '#333', width: 35 },
+                name: 'Inner',
                 hoverinfo: 'skip'
             };
             
-            // Trail (car path)
+            // Trail (car path) - only when car is moving
             trailTrace = {
                 x: [x[0]],
                 y: [y[0]],
@@ -242,7 +243,7 @@
                 }
             };
             
-            Plotly.newPlot('track-plot', [trackTrace, racingLine, trailTrace, carTrace], layout, {
+            Plotly.newPlot('track-plot', [trackTrace, innerTrace, trailTrace, carTrace], layout, {
                 displayModeBar: false,
                 responsive: true
             });
