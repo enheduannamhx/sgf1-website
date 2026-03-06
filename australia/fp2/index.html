@@ -151,10 +151,14 @@
                 const response = await fetch('australia_track.json');
                 const data = await response.json();
                 
-                // Combine x and y into telemetry format
-                telemetryData = data.x.map((x, i) => ({
-                    x: x,
-                    y: data.y[i]
+                // Use all points for track
+                const x = data.x;
+                const y = data.y;
+                
+                // Create telemetry-like format for display
+                telemetryData = x.map((xi, i) => ({
+                    x: xi,
+                    y: y[i]
                 }));
                 
                 // Set metadata
