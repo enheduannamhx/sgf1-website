@@ -599,7 +599,7 @@
                 if (i + 1 === lapNum) btn.classList.add('active');
             });
             currentLap = lapNum;
-            if (lapNum === 1) loadData();
+            if (lapNum === 1) document.addEventListener("DOMContentLoaded", loadData);
         }
         
         function formatTime(seconds) {
@@ -736,7 +736,6 @@
             
             // Tempo desde início da sessão
             const timeSinceStart = carTime - 1553.881;
-            document.getElementById('lapTime').textContent = formatTime(Math.max(0, timeSinceStart));
             
             // Atualizar checkpoints ativos
             document.querySelectorAll('.checkpoint').forEach(cp => cp.classList.remove('current'));
@@ -852,7 +851,7 @@
             animationId = requestAnimationFrame(() => setTimeout(animate, 30));
         }
         
-        loadData();
+        document.addEventListener("DOMContentLoaded", loadData);
     </script>
 </body>
 </html>
