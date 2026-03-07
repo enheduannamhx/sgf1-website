@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SG F1 - Australia GP | FP2 | Verstappen Volta 1</title>
+    <title>SG F1 - Australia GP | FP2 | Verstappen</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
     <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
     <style>
@@ -45,30 +45,77 @@
             font-size: 0.9rem;
         }
         
-        .nav {
+        .driver-info {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            padding: 10px;
+            background: #0a0a0f;
+        }
+        
+        .driver-badge {
+            background: var(--red);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 5px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: bold;
+        }
+        
+        .session-badge {
+            background: #1a1a2e;
+            color: var(--primary);
+            padding: 5px 15px;
+            border-radius: 5px;
+            font-family: 'Orbitron', sans-serif;
+            border: 1px solid var(--primary);
+        }
+        
+        .laps-nav {
             display: flex;
             justify-content: center;
             gap: 10px;
-            padding: 10px;
-            background: #12121a;
+            padding: 15px;
+            background: #0d0d12;
             flex-wrap: wrap;
         }
         
-        .nav-btn {
+        .lap-btn {
             font-family: 'Orbitron', sans-serif;
-            font-size: 0.8rem;
-            padding: 8px 16px;
-            border: 1px solid var(--primary);
+            font-size: 0.85rem;
+            padding: 10px 18px;
+            border: 2px solid var(--primary);
             background: transparent;
             color: var(--primary);
             cursor: pointer;
-            text-decoration: none;
+            border-radius: 5px;
             transition: all 0.3s;
         }
         
-        .nav-btn:hover, .nav-btn.active {
+        .lap-btn:hover:not(:disabled) {
             background: var(--primary);
             color: var(--bg-dark);
+            transform: scale(1.05);
+        }
+        
+        .lap-btn.active {
+            background: var(--primary);
+            color: var(--bg-dark);
+            font-weight: bold;
+        }
+        
+        .lap-btn:disabled {
+            border-color: #333;
+            color: #333;
+            cursor: not-allowed;
+        }
+        
+        .lap-btn .time {
+            display: block;
+            font-size: 0.65rem;
+            margin-top: 3px;
+            opacity: 0.8;
         }
         
         .controls {
@@ -142,7 +189,7 @@
         .main-content {
             display: grid;
             grid-template-columns: 1fr 300px;
-            height: calc(100vh - 280px);
+            height: calc(100vh - 380px);
         }
         
         @media (max-width: 900px) {
@@ -283,21 +330,51 @@
             text-decoration: none;
             font-size: 0.8rem;
         }
+        
+        .lap-description {
+            text-align: center;
+            padding: 10px;
+            background: #1a1a2e;
+            margin: 10px 20px;
+            border-radius: 5px;
+            font-size: 0.85rem;
+            color: var(--text-dim);
+        }
+        
+        .lap-description strong {
+            color: var(--primary);
+        }
     </style>
 </head>
 <body>
     <div class="header">
         <h1>🏎️ AUSTRALIA GP - FP2</h1>
-        <p class="subtitle">Max Verstappen | Volta 1 (Saída dos Boxes)</p>
+        <p class="subtitle">Max Verstappen | Red Bull Racing</p>
     </div>
     
-    <div class="nav">
-        <a href="/australia/fp1" class="nav-btn">FP1</a>
-        <a href="/australia/fp2" class="nav-btn active">FP2</a>
-        <a href="/australia/fp2/ver" class="nav-btn">VER</a>
-        <a href="/australia/fp3" class="nav-btn">FP3</a>
-        <a href="/australia/qualy" class="nav-btn">QUALY</a>
-        <a href="/australia/race" class="nav-btn">RACE</a>
+    <div class="driver-info">
+        <div class="driver-badge">VER</div>
+        <div class="session-badge">FP2</div>
+    </div>
+    
+    <div class="lap-description">
+        <strong>Volta 1:</strong> Saída dos boxes até a linha de chegada
+    </div>
+    
+    <div class="laps-nav">
+        <button class="lap-btn active" onclick="selectLap(1)">VOLTA 1<span class="time">1:47.564</span></button>
+        <button class="lap-btn" onclick="selectLap(2)" disabled>VOLTA 2<span class="time">1:22.210</span></button>
+        <button class="lap-btn" onclick="selectLap(3)" disabled>VOLTA 3<span class="time">2:01.533</span></button>
+        <button class="lap-btn" onclick="selectLap(4)" disabled>VOLTA 4<span class="time">1:21.080</span></button>
+        <button class="lap-btn" onclick="selectLap(5)" disabled>VOLTA 5<span class="time">1:47.397</span></button>
+        <button class="lap-btn" onclick="selectLap(6)" disabled>VOLTA 6<span class="time">1:40.261</span></button>
+        <button class="lap-btn" onclick="selectLap(7)" disabled>VOLTA 7<span class="time">1:20.366</span></button>
+        <button class="lap-btn" onclick="selectLap(8)" disabled>VOLTA 8<span class="time">--:--.---</span></button>
+        <button class="lap-btn" onclick="selectLap(9)" disabled>VOLTA 9<span class="time">--:--.---</span></button>
+        <button class="lap-btn" onclick="selectLap(10)" disabled>VOLTA 10<span class="time">1:24.588</span></button>
+        <button class="lap-btn" onclick="selectLap(11)" disabled>VOLTA 11<span class="time">1:28.706</span></button>
+        <button class="lap-btn" onclick="selectLap(12)" disabled>VOLTA 12<span class="time">1:24.918</span></button>
+        <button class="lap-btn" onclick="selectLap(13)" disabled>VOLTA 13<span class="time">--:--.---</span></button>
     </div>
     
     <div class="controls">
@@ -367,7 +444,7 @@
         </div>
     </div>
     
-    <a href="/australia" class="back-link">← Voltar para seleção de sessão</a>
+    <a href="/australia" class="back-link">← Voltar para seleção de GP</a>
 
     <script>
         let telemetry = [];
@@ -375,6 +452,7 @@
         let currentIndex = 0;
         let isPlaying = false;
         let animationId = null;
+        let currentLap = 1;
         
         // Limites do circuito
         let minX, maxX, minY, maxY;
@@ -424,6 +502,24 @@
                 `;
                 container.appendChild(div);
             });
+        }
+        
+        function selectLap(lapNum) {
+            // Atualizar botões
+            document.querySelectorAll('.lap-btn').forEach((btn, i) => {
+                btn.classList.remove('active');
+                if (i + 1 === lapNum) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            currentLap = lapNum;
+            
+            // Aqui futuramente carregaremos os dados da volta selecionada
+            // Por enquanto, apenas a Volta 1 está disponível
+            if (lapNum === 1) {
+                loadData();
+            }
         }
         
         function initPlot() {
@@ -541,7 +637,7 @@
             brakeEl.className = 'value ' + (car.brake ? 'bad' : 'good');
             
             // Tempo (assumindo que começa em 25:53.881)
-            const time = (car.time - 1553.881); // Ajustado para o início real
+            const time = (car.time - 1553.881);
             const minutes = Math.floor(Math.max(0, time) / 60);
             const seconds = Math.max(0, time) % 60;
             document.getElementById('lapTime').textContent = 
@@ -549,8 +645,8 @@
             
             // Setor
             let sector = 1;
-            if (time > 38.5) sector = 2; // Após S1
-            if (time > 60) sector = 3;   // Após S2
+            if (time > 38.5) sector = 2;
+            if (time > 60) sector = 3;
             document.getElementById('sector').textContent = sector;
             
             // Progresso
@@ -575,13 +671,6 @@
             // Trail points
             const trailX = telemetry.slice(0, currentIndex + 1).map(t => t.x);
             const trailY = telemetry.slice(0, currentIndex + 1).map(t => t.y);
-            
-            // Cores baseadas em velocidade para cada ponto
-            const colors = telemetry.slice(0, currentIndex + 1).map(t => {
-                if (t.speed > 200) return '#4ade80';
-                if (t.speed > 100) return '#fbbf24';
-                return '#ef4444';
-            });
             
             Plotly.animate('track-plot', {
                 data: [{}, {}, { x: trailX, y: trailY }, { x: [car.x], y: [car.y] }, {}],
