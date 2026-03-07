@@ -146,6 +146,16 @@
             transform: scale(1.05);
         }
         
+        .btn-pause {
+            background: #fbbf24;
+            color: #000;
+        }
+        
+        .btn-pause:hover {
+            background: #f59e0b;
+            transform: scale(1.05);
+        }
+        
         .btn-reset {
             background: #333;
             color: white;
@@ -155,44 +165,15 @@
             background: #555;
         }
         
-        .info-bar {
-            display: flex;
-            justify-content: center;
-            gap: 40px;
-            padding: 15px;
-            background: #0a0a0f;
-            flex-wrap: wrap;
-        }
-        
-        .info-item {
-            text-align: center;
-        }
-        
-        .info-label {
-            font-size: 0.7rem;
-            color: var(--text-dim);
-            text-transform: uppercase;
-            margin-bottom: 5px;
-        }
-        
-        .info-value {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.4rem;
-            color: var(--primary);
-        }
-        
-        .info-value.speed { color: #4ade80; }
-        .info-value.gear { color: #fbbf24; }
-        .info-value.rpm { color: #60a5fa; }
-        .info-value.brake { color: #ef4444; }
-        
         .main-content {
             display: grid;
-            grid-template-columns: 1fr 300px;
+            grid-template-columns: 350px 1fr 320px;
             height: calc(100vh - 380px);
+            gap: 10px;
+            padding: 10px;
         }
         
-        @media (max-width: 900px) {
+        @media (max-width: 1100px) {
             .main-content {
                 grid-template-columns: 1fr;
                 height: auto;
@@ -202,13 +183,96 @@
             }
         }
         
+        .lap-summary {
+            background: #0d0d12;
+            border-radius: 12px;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        
+        .lap-summary h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.1rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #333;
+        }
+        
+        .summary-section {
+            margin-bottom: 20px;
+        }
+        
+        .summary-section h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+        
+        .checkpoint {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background: #1a1a2e;
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+        
+        .checkpoint-name {
+            font-weight: bold;
+            color: var(--primary);
+        }
+        
+        .checkpoint-time {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.1rem;
+        }
+        
+        .checkpoint.current {
+            border: 2px solid var(--red);
+            background: #2a1a1e;
+        }
+        
+        .checkpoint.current .checkpoint-name {
+            color: var(--red);
+        }
+        
+        .sector-bars {
+            display: flex;
+            gap: 5px;
+            margin-top: 10px;
+        }
+        
+        .sector-bar {
+            flex: 1;
+            height: 8px;
+            background: #333;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .sector-bar.filled {
+            background: var(--primary);
+        }
+        
+        .sector-bar.active {
+            background: var(--red);
+        }
+        
         #track-plot {
             width: 100%;
             height: 100%;
+            min-height: 400px;
+            background: #0a0a0f;
+            border-radius: 12px;
         }
         
         .telemetry-panel {
             background: #0d0d12;
+            border-radius: 12px;
             padding: 20px;
             overflow-y: auto;
         }
@@ -284,53 +348,6 @@
             transition: width 0.1s linear;
         }
         
-        .corner-list {
-            margin-top: 20px;
-        }
-        
-        .corner-list h3 {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 0.9rem;
-            color: var(--primary);
-            margin-bottom: 10px;
-        }
-        
-        .corner-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 8px;
-            background: #1a1a2e;
-            margin-bottom: 5px;
-            border-radius: 5px;
-        }
-        
-        .corner-num {
-            width: 25px;
-            height: 25px;
-            background: #fbbf24;
-            color: #000;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 0.8rem;
-        }
-        
-        .corner-info {
-            font-size: 0.85rem;
-        }
-        
-        .back-link {
-            display: block;
-            text-align: center;
-            padding: 10px;
-            color: var(--secondary);
-            text-decoration: none;
-            font-size: 0.8rem;
-        }
-        
         .lap-description {
             text-align: center;
             padding: 10px;
@@ -343,6 +360,34 @@
         
         .lap-description strong {
             color: var(--primary);
+        }
+        
+        .legend {
+            margin-top: 20px;
+            padding: 15px;
+            background: #1a1a2e;
+            border-radius: 8px;
+        }
+        
+        .legend h4 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            margin-bottom: 10px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 5px 0;
+            font-size: 0.8rem;
+        }
+        
+        .legend-color {
+            width: 20px;
+            height: 4px;
+            border-radius: 2px;
         }
     </style>
 </head>
@@ -378,28 +423,89 @@
     </div>
     
     <div class="controls">
-        <button class="control-btn btn-play" onclick="playAnimation()">▶ Play</button>
+        <button class="control-btn btn-play" id="playBtn" onclick="togglePlay()">▶ Play</button>
         <button class="control-btn btn-reset" onclick="resetAnimation()">↺ Reset</button>
     </div>
     
-    <div class="info-bar">
-        <div class="info-item">
-            <div class="info-label">Tempo Volta</div>
-            <div class="info-value" id="lapTime">00:00.000</div>
-        </div>
-        <div class="info-item">
-            <div class="info-label">Compound</div>
-            <div class="info-value" id="compound">MEDIUM</div>
-        </div>
-        <div class="info-item">
-            <div class="info-label">Setor Atual</div>
-            <div class="info-value" id="sector">1</div>
-        </div>
-    </div>
-    
     <div class="main-content">
+        <!-- Resumo da Volta -->
+        <div class="lap-summary">
+            <h2>📋 Resumo da Volta</h2>
+            
+            <div class="summary-section">
+                <h3>Checkpoints</h3>
+                <div class="checkpoint" id="cp-pitout">
+                    <span class="checkpoint-name">🚦 Saída Boxes</span>
+                    <span class="checkpoint-time" id="time-pitout">25:53.881</span>
+                </div>
+                <div class="checkpoint" id="cp-s1">
+                    <span class="checkpoint-name">📍 Setor 1</span>
+                    <span class="checkpoint-time" id="time-s1">26:32.407</span>
+                </div>
+                <div class="checkpoint" id="cp-s2">
+                    <span class="checkpoint-name">📍 Setor 2</span>
+                    <span class="checkpoint-time" id="time-s2">26:53.868</span>
+                </div>
+                <div class="checkpoint" id="cp-s3">
+                    <span class="checkpoint-name">🏁 Chegada</span>
+                    <span class="checkpoint-time" id="time-s3">27:39.439</span>
+                </div>
+            </div>
+            
+            <div class="summary-section">
+                <h3>Setores</h3>
+                <div class="checkpoint">
+                    <span class="checkpoint-name">Setor 1</span>
+                    <span class="checkpoint-time" id="sector1-time">0:38.526</span>
+                </div>
+                <div class="checkpoint">
+                    <span class="checkpoint-name">Setor 2</span>
+                    <span class="checkpoint-time" id="sector2-time">0:21.461</span>
+                </div>
+                <div class="checkpoint">
+                    <span class="checkpoint-name">Setor 3</span>
+                    <span class="checkpoint-time" id="sector3-time">0:45.571</span>
+                </div>
+                <div class="sector-bars">
+                    <div class="sector-bar" id="bar-s1"></div>
+                    <div class="sector-bar" id="bar-s2"></div>
+                    <div class="sector-bar" id="bar-s3"></div>
+                </div>
+            </div>
+            
+            <div class="summary-section">
+                <h3>Tempo Total</h3>
+                <div class="checkpoint">
+                    <span class="checkpoint-name">⏱️ Volta</span>
+                    <span class="checkpoint-time" id="total-time">01:47.564</span>
+                </div>
+            </div>
+            
+            <div class="legend">
+                <h4>🎨 Legenda da Pista</h4>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #00ff00;"></div>
+                    <span>Saída Boxes (PitOut)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #ffff00;"></div>
+                    <span>Linha Setor 1</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #ff8800;"></div>
+                    <span>Linha Setor 2</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #ff0000;"></div>
+                    <span>Linha de Chegada</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mapa da Pista -->
         <div id="track-plot"></div>
         
+        <!-- Telemetria -->
         <div class="telemetry-panel">
             <h2>📊 Telemetria</h2>
             
@@ -436,15 +542,8 @@
                     <div class="progress-fill" id="progress"></div>
                 </div>
             </div>
-            
-            <div class="corner-list">
-                <h3>📍 Curvas</h3>
-                <div id="corners"></div>
-            </div>
         </div>
     </div>
-    
-    <a href="/australia" class="back-link">← Voltar para seleção de GP</a>
 
     <script>
         let telemetry = [];
@@ -453,6 +552,15 @@
         let isPlaying = false;
         let animationId = null;
         let currentLap = 1;
+        
+        // Checkpoints com coordenadas (X, Y) da pista
+        // Tempos alinhados com a telemetria (primeiro ponto: 1553.2s, último: 1660.0s)
+        const checkpoints = {
+            pitout: { x: -4857, y: 10636, time: 1553.2, name: 'pitout' },
+            setor1: { x: 5573, y: -5504, time: 1592.4, name: 's1' },
+            setor2: { x: -3510, y: 894, time: 1613.8, name: 's2' },
+            chegada: { x: 395, y: 3654, time: 1659.4, name: 's3' }
+        };
         
         // Limites do circuito
         let minX, maxX, minY, maxY;
@@ -474,12 +582,9 @@
                 maxY = Math.max(...telemetry.map(t => t.y));
                 
                 // Adicionar margem
-                const margin = 150;
+                const margin = 200;
                 minX -= margin; maxX += margin;
                 minY -= margin; maxY += margin;
-                
-                // Renderizar corners
-                renderCorners();
                 
                 // Iniciar
                 initPlot();
@@ -489,61 +594,75 @@
             }
         }
         
-        function renderCorners() {
-            const container = document.getElementById('corners');
-            container.innerHTML = '';
-            
-            circuitCorners.forEach(c => {
-                const div = document.createElement('div');
-                div.className = 'corner-item';
-                div.innerHTML = `
-                    <div class="corner-num">${c.numero}</div>
-                    <div class="corner-info">Curva ${c.numero}</div>
-                `;
-                container.appendChild(div);
-            });
-        }
-        
         function selectLap(lapNum) {
-            // Atualizar botões
             document.querySelectorAll('.lap-btn').forEach((btn, i) => {
                 btn.classList.remove('active');
-                if (i + 1 === lapNum) {
-                    btn.classList.add('active');
-                }
+                if (i + 1 === lapNum) btn.classList.add('active');
             });
-            
             currentLap = lapNum;
-            
-            // Aqui futuramente carregaremos os dados da volta selecionada
-            // Por enquanto, apenas a Volta 1 está disponível
-            if (lapNum === 1) {
-                loadData();
-            }
+            if (lapNum === 1) loadData();
         }
         
-        // Checkpoints com coordenadas (X, Y) da pista
-        const checkpoints = {
-            pitout: { x: -4857, y: 10636, time: 1553.881, name: 'pitout' },
-            setor1: { x: 5573, y: -5504, time: 1592.407, name: 's1' },
-            setor2: { x: -3510, y: 894, time: 1613.868, name: 's2' },
-            chegada: { x: 395, y: 3654, time: 1659.439, name: 's3' }
-        };
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins.toString().padStart(2, '0')}:${secs.toFixed(3).padStart(6, '0')}`;
+        }
         
         function initPlot() {
             const x = telemetry.map(t => t.x);
             const y = telemetry.map(t => t.y);
             
-            // Pista - apenas linha centralTrace (tracejado)
+            // Pista (borda externa)
+            const trackTrace = {
+                x: x, y: y,
+                mode: 'lines',
+                line: { color: '#444', width: 60 },
+                name: 'Pista',
+                hoverinfo: 'skip'
+            };
+            
+            // Linha central
             const centerTrace = {
-                x: x,
-                y: y,
+                x: x, y: y,
                 mode: 'lines',
                 line: { color: '#666', width: 2, dash: 'dash' },
                 name: 'Centro',
                 hoverinfo: 'skip'
             };
             
+            // Linhas de checkpoints
+            // PitOut - Verde
+            const pitoutLine = {
+                x: [checkpoints.pitout.x - 100, checkpoints.pitout.x + 100],
+                y: [checkpoints.pitout.y, checkpoints.pitout.y],
+                mode: 'lines',
+                line: { color: '#00ff00', width: 4 },
+                name: 'PitOut',
+                hoverinfo: 'skip'
+            };
+            
+            // Setor 1 - Amarelo
+            const s1Line = {
+                x: [checkpoints.setor1.x - 100, checkpoints.setor1.x + 100],
+                y: [checkpoints.setor1.y, checkpoints.setor1.y],
+                mode: 'lines',
+                line: { color: '#ffff00', width: 3 },
+                name: 'Setor1',
+                hoverinfo: 'skip'
+            };
+            
+            // Setor 2 - Laranja
+            const s2Line = {
+                x: [checkpoints.setor2.x - 100, checkpoints.setor2.x + 100],
+                y: [checkpoints.setor2.y, checkpoints.setor2.y],
+                mode: 'lines',
+                line: { color: '#ff8800', width: 3 },
+                name: 'Setor2',
+                hoverinfo: 'skip'
+            };
+            
+            // Chegada - Vermelho
             // Chegada - Vermelho (5x mais larga)
             const chegadaLine = {
                 x: [checkpoints.chegada.x - 150, checkpoints.chegada.x + 150],
@@ -556,8 +675,7 @@
             
             // Trail (trajetória)
             const trailTrace = {
-                x: [],
-                y: [],
+                x: [], y: [],
                 mode: 'lines',
                 line: { color: '#e10600', width: 4 },
                 name: 'Trail',
@@ -583,14 +701,9 @@
             const cornerY = circuitCorners.map(c => c.y);
             
             const cornerTrace = {
-                x: cornerX,
-                y: cornerY,
+                x: cornerX, y: cornerY,
                 mode: 'markers+text',
-                marker: { 
-                    size: 20, 
-                    color: '#fbbf24',
-                    line: { color: '#000', width: 2 }
-                },
+                marker: { size: 20, color: '#fbbf24', line: { color: '#000', width: 2 } },
                 text: circuitCorners.map(c => c.numero.toString()),
                 textposition: 'center',
                 textfont: { color: '#000', size: 10, family: 'Orbitron' },
@@ -603,28 +716,15 @@
                 plot_bgcolor: '#050508',
                 showlegend: false,
                 margin: { t: 20, b: 20, l: 20, r: 20 },
-                xaxis: { 
-                    range: [minX, maxX],
-                    showgrid: false, 
-                    zeroline: false, 
-                    showticklabels: false 
-                },
-                yaxis: { 
-                    range: [minY, maxY],
-                    showgrid: false, 
-                    zeroline: false, 
-                    showticklabels: false,
-                    scaleanchor: 'x',
-                    scaleratio: 1
-                }
+                xaxis: { range: [minX, maxX], showgrid: false, zeroline: false, showticklabels: false },
+                yaxis: { range: [minY, maxY], showgrid: false, zeroline: false, showticklabels: false, scaleanchor: 'x', scaleratio: 1 }
             };
             
-            Plotly.newPlot('track-plot', [centerTrace, chegadaLine, trailTrace, carTrace, cornerTrace], layout, {
+            Plotly.newPlot('track-plot', [trackTrace, centerTrace, pitoutLine, s1Line, s2Line, chegadaLine, trailTrace, carTrace, cornerTrace], layout, {
                 displayModeBar: false,
                 responsive: true
             });
             
-            // Atualizar telemetria inicial
             updateTelemetry();
         }
         
@@ -632,6 +732,7 @@
             if (currentIndex >= telemetry.length) return;
             
             const car = telemetry[currentIndex];
+            const carTime = car.time;
             
             // Atualizar valores
             document.getElementById('speed').textContent = Math.round(car.speed) + ' km/h';
@@ -644,17 +745,36 @@
             brakeEl.textContent = car.brake ? 'ON' : 'OFF';
             brakeEl.className = 'value ' + (car.brake ? 'bad' : 'good');
             
-            // Tempo (assumindo que começa em 25:53.881)
-            const time = (car.time - 1553.881);
-            const minutes = Math.floor(Math.max(0, time) / 60);
-            const seconds = Math.max(0, time) % 60;
-            document.getElementById('lapTime').textContent = 
-                `${minutes.toString().padStart(2, '0')}:${seconds.toFixed(3).padStart(6, '0')}`;
+            // Tempo desde início da sessão
+            const timeSinceStart = carTime - 1553.2;
+            document.getElementById('lapTime').textContent = formatTime(Math.max(0, timeSinceStart));
             
-            // Setor
+            // Atualizar checkpoints ativos
+            document.querySelectorAll('.checkpoint').forEach(cp => cp.classList.remove('current'));
+            
+            if (timeSinceStart >= checkpoints.pitout.time - 1553.2) {
+                document.getElementById('cp-pitout').classList.add('current');
+                document.getElementById('bar-s1').classList.add('filled');
+            }
+            if (timeSinceStart >= checkpoints.setor1.time - 1553.2) {
+                document.getElementById('cp-s1').classList.add('current');
+                document.getElementById('bar-s1').classList.add('active');
+                document.getElementById('bar-s2').classList.add('filled');
+            }
+            if (timeSinceStart >= checkpoints.setor2.time - 1553.2) {
+                document.getElementById('cp-s2').classList.add('current');
+                document.getElementById('bar-s2').classList.add('active');
+                document.getElementById('bar-s3').classList.add('filled');
+            }
+            if (timeSinceStart >= checkpoints.chegada.time - 1553.2) {
+                document.getElementById('cp-s3').classList.add('current');
+                document.getElementById('bar-s3').classList.add('active');
+            }
+            
+            // Setor atual
             let sector = 1;
-            if (time > 38.5) sector = 2;
-            if (time > 60) sector = 3;
+            if (timeSinceStart > 38.5) sector = 2;
+            if (timeSinceStart > 60) sector = 3;
             document.getElementById('sector').textContent = sector;
             
             // Progresso
@@ -668,24 +788,48 @@
             else speedEl.className = 'value bad';
         }
         
-        function drawCar() {
-            if (currentIndex >= telemetry.length) {
-                isPlaying = false;
-                return;
+        function togglePlay() {
+            if (isPlaying) {
+                pauseAnimation();
+            } else {
+                playAnimation();
             }
-            
-            const car = telemetry[currentIndex];
-            
-            // Trail points
-            const trailX = telemetry.slice(0, currentIndex + 1).map(t => t.x);
-            const trailY = telemetry.slice(0, currentIndex + 1).map(t => t.y);
+        }
+        
+        function playAnimation() {
+            if (currentIndex >= telemetry.length) {
+                currentIndex = 0;
+            }
+            isPlaying = true;
+            document.getElementById('playBtn').textContent = '⏸ Pause';
+            document.getElementById('playBtn').className = 'control-btn btn-pause';
+            animate();
+        }
+        
+        function pauseAnimation() {
+            isPlaying = false;
+            document.getElementById('playBtn').textContent = '▶ Play';
+            document.getElementById('playBtn').className = 'control-btn btn-play';
+            if (animationId) clearTimeout(animationId);
+        }
+        
+        function resetAnimation() {
+            pauseAnimation();
+            currentIndex = 0;
             
             Plotly.animate('track-plot', {
-                data: [{}, {}, { x: trailX, y: trailY }, { x: [car.x], y: [car.y] }, {}],
-                traces: [0, 1, 2, 3]
+                data: [{}, {}, {}, {}, {}, {}, { x: [], y: [] }, { x: [telemetry[0].x], y: [telemetry[0].y] }, {}],
+                traces: [0, 1, 2, 3, 4, 5, 6, 7]
             }, {
                 transition: { duration: 0 },
                 frame: { duration: 0, redraw: false }
+            });
+            
+            // Reset checkpoints
+            document.querySelectorAll('.checkpoint').forEach(cp => cp.classList.remove('current'));
+            document.querySelectorAll('.sector-bar').forEach(bar => {
+                bar.classList.remove('filled');
+                bar.classList.remove('active');
             });
             
             updateTelemetry();
@@ -697,36 +841,26 @@
             currentIndex++;
             if (currentIndex >= telemetry.length) {
                 isPlaying = false;
+                document.getElementById('playBtn').textContent = '▶ Play';
+                document.getElementById('playBtn').className = 'control-btn btn-play';
                 return;
             }
             
-            drawCar();
-            animationId = requestAnimationFrame(() => setTimeout(animate, 30));
-        }
-        
-        function playAnimation() {
-            if (currentIndex >= telemetry.length) {
-                currentIndex = 0;
-            }
-            isPlaying = true;
-            animate();
-        }
-        
-        function resetAnimation() {
-            isPlaying = false;
-            if (animationId) clearTimeout(animationId);
-            currentIndex = 0;
+            const car = telemetry[currentIndex];
             
-            // Reset plot
+            const trailX = telemetry.slice(0, currentIndex + 1).map(t => t.x);
+            const trailY = telemetry.slice(0, currentIndex + 1).map(t => t.y);
+            
             Plotly.animate('track-plot', {
-                data: [{}, {}, { x: [], y: [] }, { x: [telemetry[0].x], y: [telemetry[0].y] }, {}],
-                traces: [0, 1, 2, 3]
+                data: [{}, {}, {}, {}, {}, {}, { x: trailX, y: trailY }, { x: [car.x], y: [car.y] }, {}],
+                traces: [6, 7]
             }, {
                 transition: { duration: 0 },
                 frame: { duration: 0, redraw: false }
             });
             
             updateTelemetry();
+            animationId = requestAnimationFrame(() => setTimeout(animate, 30));
         }
         
         loadData();
