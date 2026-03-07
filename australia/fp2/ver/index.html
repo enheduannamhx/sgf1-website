@@ -612,21 +612,12 @@
             const x = telemetry.map(t => t.x);
             const y = telemetry.map(t => t.y);
             
-            // Pista (borda externa)
+            // Pista - apenas linha central
             const trackTrace = {
                 x: x, y: y,
                 mode: 'lines',
-                line: { color: '#444', width: 60 },
+                line: { color: '#666', width: 2 },
                 name: 'Pista',
-                hoverinfo: 'skip'
-            };
-            
-            // Linha central
-            const centerTrace = {
-                x: x, y: y,
-                mode: 'lines',
-                line: { color: '#666', width: 2, dash: 'dash' },
-                name: 'Centro',
                 hoverinfo: 'skip'
             };
             
@@ -661,12 +652,12 @@
                 hoverinfo: 'skip'
             };
             
-            // Chegada - Vermelho
+            // Chegada - Vermelho (5x mais larga)
             const chegadaLine = {
-                x: [checkpoints.chegada.x - 100, checkpoints.chegada.x + 100],
+                x: [checkpoints.chegada.x - 150, checkpoints.chegada.x + 150],
                 y: [checkpoints.chegada.y, checkpoints.chegada.y],
                 mode: 'lines',
-                line: { color: '#ff0000', width: 4 },
+                line: { color: '#ff0000', width: 20 },
                 name: 'Chegada',
                 hoverinfo: 'skip'
             };
@@ -718,7 +709,7 @@
                 yaxis: { range: [minY, maxY], showgrid: false, zeroline: false, showticklabels: false, scaleanchor: 'x', scaleratio: 1 }
             };
             
-            Plotly.newPlot('track-plot', [trackTrace, centerTrace, pitoutLine, s1Line, s2Line, chegadaLine, trailTrace, carTrace, cornerTrace], layout, {
+            Plotly.newPlot('track-plot', [trackTrace, pitoutLine, s1Line, s2Line, chegadaLine, trailTrace, carTrace, cornerTrace], layout, {
                 displayModeBar: false,
                 responsive: true
             });
@@ -817,7 +808,7 @@
             
             Plotly.animate('track-plot', {
                 data: [{}, {}, {}, {}, {}, {}, { x: [], y: [] }, { x: [telemetry[0].x], y: [telemetry[0].y] }, {}],
-                traces: [0, 1, 2, 3, 4, 5, 6, 7]
+                traces: [5, 6]
             }, {
                 transition: { duration: 0 },
                 frame: { duration: 0, redraw: false }
@@ -851,7 +842,7 @@
             
             Plotly.animate('track-plot', {
                 data: [{}, {}, {}, {}, {}, {}, { x: trailX, y: trailY }, { x: [car.x], y: [car.y] }, {}],
-                traces: [6, 7]
+                traces: [5, 6]
             }, {
                 transition: { duration: 0 },
                 frame: { duration: 0, redraw: false }
