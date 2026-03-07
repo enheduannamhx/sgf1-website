@@ -600,7 +600,7 @@
                 if (i + 1 === lapNum) btn.classList.add('active');
             });
             currentLap = lapNum;
-            if (lapNum === 1) loadData();
+            if (lapNum === 1) document.addEventListener("DOMContentLoaded", loadData);
         }
         
         function formatTime(seconds) {
@@ -747,7 +747,6 @@
             
             // Tempo desde início da sessão
             const timeSinceStart = carTime - 1553.2;
-            document.getElementById('lapTime').textContent = formatTime(Math.max(0, timeSinceStart));
             
             // Atualizar checkpoints ativos
             document.querySelectorAll('.checkpoint').forEach(cp => cp.classList.remove('current'));
@@ -775,7 +774,6 @@
             let sector = 1;
             if (timeSinceStart > 38.5) sector = 2;
             if (timeSinceStart > 60) sector = 3;
-            document.getElementById('sector').textContent = sector;
             
             // Progresso
             const progress = (currentIndex / telemetry.length) * 100;
@@ -863,7 +861,7 @@
             animationId = requestAnimationFrame(() => setTimeout(animate, 30));
         }
         
-        loadData();
+        document.addEventListener("DOMContentLoaded", loadData);
     </script>
 </body>
 </html>
