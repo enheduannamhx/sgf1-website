@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SG F1 - Australia GP | FP2</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <style>
+        :root {
+            --primary: #00f0ff;
+            --secondary: #ff00aa;
+            --bg-dark: #050508;
+            --text: #fff;
+            --text-dim: #888;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text);
+            min-height: 100vh;
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(180deg, #1a1a2e 0%, var(--bg-dark) 100%);
+            padding: 15px;
+            text-align: center;
+            border-bottom: 2px solid var(--primary);
+        }
+        
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+        
+        .nav {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            padding: 10px;
+            background: #12121a;
+            flex-wrap: wrap;
+        }
+        
+        .nav-btn {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.8rem;
+            padding: 8px 16px;
+            border: 1px solid var(--primary);
+            background: transparent;
+            color: var(--primary);
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        
+        .nav-btn:hover, .nav-btn.active {
+            background: var(--primary);
+            color: var(--bg-dark);
+        }
+        
+        .info-bar {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            padding: 15px;
+            background: #0a0a0f;
+            flex-wrap: wrap;
+        }
+        
+        .info-item {
+            text-align: center;
+        }
+        
+        .info-label {
+            font-size: 0.7rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+        }
+        
+        .info-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+            color: var(--primary);
+        }
+        
+        #track-plot {
+            width: 100%;
+            height: calc(100vh - 200px);
+        }
+        
+        .back-link {
+            display: block;
+            text-align: center;
+            padding: 10px;
+            color: var(--secondary);
+            text-decoration: none;
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🏎️ AUSTRALIA GP - FP2</h1>
+        <p style="color: #888; font-size: 0.9rem;">Verstappen | Telemetria</p>
+    </div>
+    
+    <div class="nav">
+        <a href="/australia/fp1" class="nav-btn">FP1</a>
+        <a href="/australia/fp2" class="nav-btn active">FP2</a>
+        <a href="/australia/fp3" class="nav-btn">FP3</a>
+        <a href="/australia/qualy" class="nav-btn">QUALY</a>
+        <a href="/australia/race" class="nav-btn">RACE</a>
+    </div>
+    
+    <div class="info-bar">
+        <div class="info-item">
+            <div class="info-label">Lap Time</div>
+            <div class="info-value" id="lapTime">--:--.---</div>
+        </div>
+        <div class="info-item">
+            <div class="info-label">Compound</div>
+            <div class="info-value" id="compoundValue">--</div>
+        </div>
+        <div class="info-item">
+            <div class="info-label">Setor</div>
+            <div class="info-value" id="sectorValue">1</div>
+        </div>
+        <div class="info-item">
+            <div class="info-label">Speed</div>
+            <div class="info-value" id="speedValue">0 km/h</div>
+        </div>
+    </div>
+    
+    <div id="track-plot"></div>
+    
+    <a href="/australia" class="back-link">← Voltar para seleção de sessão</a>
+
+    <script>
+        let telemetryData = [];
+        let trackTrace, racingLine, trailTrace, carTrace;
+        
+        async function loadData() {
+            try {
+                const response = await fetch('australia_track.json');
+                const data = await response.json();
+                
+                // Use all points for track
+                const x = data.x;
+                const y = data.y;
+                
+                // Create telemetry-like format for display
+                telemetryData = x.map((xi, i) => ({
+                    x: xi,
+                    y: y[i]
+                }));
+                
+                // Set metadata
+                document.getElementById('lapTime').textContent = '1:47.564';
+                document.getElementById('compoundValue').textContent = 'SOFT';
+                
+                initPlot();
+            } catch (e) {
+                console.error('Error loading data:', e);
+                document.getElementById('track-plot').innerHTML = '<div style="color:#888;text-align:center;padding:50px;">Erro ao carregar dados</div>';
+            }
+        }
+        
+        function initPlot() {
+            const x = telemetryData.map(t => t.x);
+            const y = telemetryData.map(t => t.y);
+            
+            // Track background - gray border representing the actual track
+            trackTrace = {
+                x: x,
+                y: y,
+                mode: 'lines',
+                line: { color: '#444', width: 55 },
+                name: 'Pista',
+                hoverinfo: 'skip'
+            };
+            
+            // Racing line removed - only showing track border now
+            
+            // Inner track line (optional subtle center)
+            const innerTrace = {
+                x: x,
+                y: y,
+                mode: 'lines',
+                line: { color: '#333', width: 35 },
+                name: 'Inner',
+                hoverinfo: 'skip'
+            };
+            
+            // Trail (car path) - only when car is moving
+            trailTrace = {
+                x: [x[0]],
+                y: [y[0]],
+                mode: 'lines',
+                line: { color: '#d61818', width: 4 },
+                name: 'Trail',
+                hoverinfo: 'skip'
+            };
+            
+            // Car marker
+            carTrace = {
+                x: [x[0]],
+                y: [y[0]],
+                mode: 'markers',
+                marker: { 
+                    size: 20, 
+                    color: '#d61818',
+                    line: { color: '#fff', width: 3 }
+                },
+                name: 'CAR',
+                hoverinfo: 'skip'
+            };
+            
+            const layout = {
+                paper_bgcolor: '#050508',
+                plot_bgcolor: '#050508',
+                showlegend: false,
+                margin: { t: 20, b: 20, l: 20, r: 20 },
+                xaxis: { 
+                    range: [Math.min(...x) - 100, Math.max(...x) + 100],
+                    showgrid: false, 
+                    zeroline: false, 
+                    showticklabels: false 
+                },
+                yaxis: { 
+                    range: [Math.min(...y) - 100, Math.max(...y) + 100],
+                    showgrid: false, 
+                    zeroline: false, 
+                    showticklabels: false,
+                    scaleanchor: 'x',
+                    scaleratio: 1
+                }
+            };
+            
+            Plotly.newPlot('track-plot', [trackTrace, innerTrace, trailTrace, carTrace], layout, {
+                displayModeBar: false,
+                responsive: true
+            });
+        }
+        
+        loadData();
+    </script>
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SG F1 - Australia GP</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <style>
+        :root {
+            --primary: #00f0ff;
+            --secondary: #ff00aa;
+            --bg-dark: #0a0a0f;
+            --bg-card: #12121a;
+            --text: #fff;
+            --text-dim: #888;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text);
+            min-height: 100vh;
+        }
+        
+        .header {
+            background: linear-gradient(180deg, #1a1a2e 0%, var(--bg-dark) 100%);
+            padding: 20px;
+            text-align: center;
+            border-bottom: 2px solid var(--primary);
+        }
+        
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: var(--text-dim);
+            font-size: 1rem;
+        }
+        
+        .session-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            padding: 40px 20px;
+            flex-wrap: wrap;
+        }
+        
+        .session-btn {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            padding: 20px 40px;
+            border: 2px solid var(--primary);
+            background: transparent;
+            color: var(--primary);
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            min-width: 150px;
+        }
+        
+        .session-btn:hover {
+            background: var(--primary);
+            color: var(--bg-dark);
+            transform: scale(1.05);
+            box-shadow: 0 0 20px var(--primary);
+        }
+        
+        .session-btn.active {
+            background: var(--primary);
+            color: var(--bg-dark);
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-dim);
+            font-size: 0.8rem;
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: var(--secondary);
+            text-decoration: none;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🏎️ AUSTRALIA GP</h1>
+        <p class="subtitle">Albert Park Circuit | Melbourne | 2026</p>
+    </div>
+    
+    <div class="session-buttons">
+        <a href="/australia/fp1" class="session-btn">FP1</a>
+        <a href="/australia/fp2" class="session-btn active">FP2</a>
+        <a href="/australia/fp3" class="session-btn">FP3</a>
+        <a href="/australia/qualy" class="session-btn">QUALY</a>
+        <a href="/australia/race" class="session-btn">RACE</a>
+    </div>
+    
+    <div class="footer">
+        <p>Selecione uma sessão acima para ver os dados de telemetria</p>
+        <a href="/" class="back-link">← Voltar ao início</a>
+    </div>
+</body>
+</html>
